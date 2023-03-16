@@ -13,7 +13,7 @@ const blankTemplate = Template.fromStack(blankStack)
 describe('Cloudformation Template validation', () => {
   it('includes the lambda function', () => {
     blankTemplate.hasResourceProperties('AWS::Lambda::Function', {
-      // Runtime: 'nodejs16.x',
+      Runtime: 'nodejs18.x',
     })
   })
 })
