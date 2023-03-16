@@ -1,31 +1,70 @@
 /* eslint-disable no-console */
-import {
-  CloudFormationClient,
-  DescribeStacksCommand,
-} from '@aws-sdk/client-cloudformation'
-import { makeBadge } from 'badge-maker'
 
-const cf = new CloudFormationClient({})
+import {
+  CfStatusMappings,
+  getCfLastModifiedBadge,
+  getCfStackInfo,
+  getCfStatusBadge,
+} from './cf-badges'
+import { allColors } from './colors'
 
 export const handler = async () => {
   const { STACK_NAME } = process.env
 
-  const stack = await cf.send(
-    new DescribeStacksCommand({ StackName: STACK_NAME })
-  )
+  if (STACK_NAME === undefined || STACK_NAME === '')
+    throw new Error('STACK_NAME is not defined.')
 
-  const badge = makeBadge({
-    color: '#23175ed1',
-    label: STACK_NAME,
-    message: stack.Stacks?.[0]?.StackStatus ?? 'unknown',
-    style: 'flat-square',
-  })
+  const info = await getCfStackInfo(STACK_NAME)
+
+  const html = `
+<html>
+<head>
+  <title>CDK Badges</title>
+</head>
+<body>
+${getCfLastModifiedBadge(info)}
+${allColors
+  .map(
+    (color, index) =>
+      `<div style="margin-bottom:4px;margin-right:3px;">${getCfLastModifiedBadge(
+        info,
+        {
+          color,
+        }
+      )}${getCfStatusBadge(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { ...info, status: Object.keys(CfStatusMappings)[index] as any },
+        {
+          color,
+        }
+      )}${getCfStatusBadge(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { ...info, status: Object.keys(CfStatusMappings)[index] as any },
+        {
+          color,
+        },
+        true
+      )}</div>`
+  )
+  .join('\n')}
+${allColors
+  .map(
+    (color) =>
+      `${getCfLastModifiedBadge(info, { color, style: 'for-the-badge' })}`
+  )
+  .join('\n')}
+${allColors
+  .map((color) => `${getCfLastModifiedBadge({}, { color })}`)
+  .join('\n')}
+</body>
+</html>`
 
   return {
-    body: badge,
+    body: html,
     headers: {
       'cache-control': 'max-age=300, private',
-      'content-type': 'image/svg+xml; charset=utf-8',
+      // 'content-type': 'image/svg+xml; charset=utf-8',
+      'content-type': 'text/html; charset=utf-8',
     },
     isBase64Encoded: false,
     statusCode: 200,
