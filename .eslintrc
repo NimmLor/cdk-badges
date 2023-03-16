@@ -8,7 +8,7 @@
         "@atws/eslint-config/projen"
       ],
       "files": [
-        "{src,test}/*.ts",
+        "{src,test}/**/*.ts",
         ".projenrc.{js,ts}"
       ],
       "parserOptions": {

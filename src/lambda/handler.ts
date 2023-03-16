@@ -1,17 +1,18 @@
 /* eslint-disable no-console */
-import { CloudFormation } from 'aws-sdk'
+import {
+  CloudFormationClient,
+  DescribeStacksCommand,
+} from '@aws-sdk/client-cloudformation'
 import { makeBadge } from 'badge-maker'
 
-const cf = new CloudFormation({ apiVersion: '2010-05-15' })
+const cf = new CloudFormationClient({})
 
 export const handler = async () => {
   const { STACK_NAME } = process.env
 
-  const stack = await cf
-    .describeStacks({
-      StackName: STACK_NAME,
-    })
-    .promise()
+  const stack = await cf.send(
+    new DescribeStacksCommand({ StackName: STACK_NAME })
+  )
 
   const badge = makeBadge({
     color: '#23175ed1',

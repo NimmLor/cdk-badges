@@ -8,11 +8,7 @@ import { awscdk } from 'projen'
 
 // aws lambda function url support added in v2.21.0
 // @see https://github.com/aws/aws-cdk/releases/tag/v2.21.0
-// node16 support added in v2.24.0
-// @see https://github.com/aws/aws-cdk/releases/tag/v2.24.0
-// node18 support added in v2.51.0
-// @see https://github.com/aws/aws-cdk/releases/tag/v2.51.0
-const cdkVersion = '2.24.0'
+const cdkVersion = '2.21.0'
 
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Lorenz Nimmervoll',
@@ -23,10 +19,11 @@ const project = new awscdk.AwsCdkConstructLibrary({
   deps: [],
   description: 'Get awesome status badges for your cdk projects.',
   devDeps: [
-    'aws-sdk@2.1083.0',
     'esbuild',
     '@atws/projen-config',
     '@atws/tsconfig',
+    '@aws-sdk/client-cloudformation@3.188.0',
+    '@types/aws-lambda',
   ],
   gitignore: ['cdk.out', 'tsconfig.json'],
   jest: true,
@@ -48,7 +45,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
 new PrettierConfig(project)
 
 new EslintConfig(project, {
-  projenFileRegex: '{src,test}/*.ts',
+  projenFileRegex: '{src,test}/**/*.ts',
 })
 
 new VscodeConfig(project, {
