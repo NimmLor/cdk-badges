@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "@atws/eslint-config"
+  ],
+  "overrides": [
+    {
+      "extends": [
+        "@atws/eslint-config/projen"
+      ],
+      "files": [
+        "{src,test}/*.ts",
+        ".projenrc.{js,ts}"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.dev.json"
+      }
+    }
+  ],
+  "root": true
+}

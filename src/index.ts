@@ -1,0 +1,60 @@
+import {
+  aws_codepipeline,
+  aws_iam,
+  aws_lambda,
+  aws_lambda_nodejs,
+  Duration,
+  Stack,
+} from 'aws-cdk-lib'
+import { Construct } from 'constructs'
+
+/**
+ * A map of pipelines consisting of an id and the pipeline itself.
+ * The id is used to identify pipelines and their badges.
+ *
+ * @example
+ * {
+ *  'webapp': webappPipeline,
+ *  'backend': backendPipeline,
+ * }
+ */
+export interface PipelineProps {
+  [key: string]: aws_codepipeline.Pipeline
+}
+
+export interface CdkBadgesProps {
+  readonly pipelines?: PipelineProps
+}
+
+export class CdkBadges extends Construct {
+  public lambdaHandler: aws_lambda_nodejs.NodejsFunction
+
+  public constructor(scope: Stack, id: string, props: CdkBadgesProps) {
+    super(scope, id)
+
+    if (props.pipelines) {
+      throw new Error('Pipelines are not yet supported.')
+    }
+
+    this.lambdaHandler = new aws_lambda_nodejs.NodejsFunction(this, 'handler', {
+      description: 'Generate status badges for cdk resources.',
+      environment: {
+        STACK_NAME: Stack.of(this).stackName,
+      },
+      memorySize: 256,
+      runtime: aws_lambda.Runtime.NODEJS_16_X,
+      timeout: Duration.seconds(10),
+    })
+
+    this.lambdaHandler.addFunctionUrl({
+      authType: aws_lambda.FunctionUrlAuthType.NONE,
+    })
+
+    this.lambdaHandler.addToRolePolicy(
+      new aws_iam.PolicyStatement({
+        actions: ['cloudformation:DescribeStacks'],
+        resources: ['*'],
+      })
+    )
+  }
+}
