@@ -41,6 +41,7 @@ export class CdkBadges extends Construct {
         externalModules: ['@aws-sdk/*'],
       },
       description: 'Generate status badges for cdk resources.',
+      entry: 'src/lambda/handler',
       environment: {
         STACK_NAME: Stack.of(this).stackName,
       },
