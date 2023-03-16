@@ -9,6 +9,15 @@
       "type": "build"
     },
     {
+      "name": "@aws-sdk/client-cloudformation",
+      "version": "3.188.0",
+      "type": "build"
+    },
+    {
+      "name": "@types/aws-lambda",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "version": "^27",
       "type": "build"
@@ -30,12 +39,7 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "2.24.0",
-      "type": "build"
-    },
-    {
-      "name": "aws-sdk",
-      "version": "2.1083.0",
+      "version": "2.21.0",
       "type": "build"
     },
     {
@@ -149,7 +153,7 @@
     },
     {
       "name": "aws-cdk-lib",
-      "version": "^2.24.0",
+      "version": "^2.21.0",
       "type": "peer"
     },
     {

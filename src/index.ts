@@ -37,12 +37,19 @@ export class CdkBadges extends Construct {
     }
 
     this.lambdaHandler = new aws_lambda_nodejs.NodejsFunction(this, 'handler', {
+      bundling: {
+        externalModules: ['@aws-sdk/*'],
+      },
       description: 'Generate status badges for cdk resources.',
       environment: {
         STACK_NAME: Stack.of(this).stackName,
       },
+      functionName: `${Stack.of(this).stackName}-CdkBadges`,
       memorySize: 256,
-      runtime: aws_lambda.Runtime.NODEJS_16_X,
+      runtime: new aws_lambda.Runtime(
+        'nodejs18.x',
+        aws_lambda.RuntimeFamily.NODEJS
+      ),
       timeout: Duration.seconds(10),
     })
 

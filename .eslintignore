@@ -7,3 +7,4 @@ tsconfig.json
 tsconfig.*.json
 !.projenrc.js
 !.projenrc.ts
+lib
