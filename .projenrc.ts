@@ -23,7 +23,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@atws/projen-config',
     '@atws/tsconfig',
     '@aws-sdk/client-cloudformation@3.188.0',
+    '@aws-sdk/client-s3@3.188.0',
     '@types/aws-lambda',
+    'lambda-api',
   ],
   gitignore: ['cdk.out', 'tsconfig.json'],
   jest: true,
@@ -42,10 +44,21 @@ const project = new awscdk.AwsCdkConstructLibrary({
   stability: 'experimental',
   workflowNodeVersion: '16.x',
 })
+
+project.setScript('cdk', 'cdk')
+project.setScript(
+  'e2e',
+  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --profile sandbox-h --require-approval never'
+)
+project.setScript(
+  'deploy',
+  'yarn cdk deploy --app "npx ts-node --prefer-ts-exts ./src/integ.default.ts" --profile sandbox-h --require-approval never --hotswap'
+)
+
 new PrettierConfig(project)
 
 new EslintConfig(project, {
-  ignorePaths: ['lib'],
+  ignorePaths: ['lib/**/*'],
   projenFileRegex: '{src,test}/**/*.ts',
 })
 
