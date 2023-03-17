@@ -1,8 +1,9 @@
+import type { aws_codepipeline } from 'aws-cdk-lib'
 import {
-  aws_codepipeline,
   aws_iam,
   aws_lambda,
   aws_lambda_nodejs,
+  CfnOutput,
   Duration,
   Stack,
 } from 'aws-cdk-lib'
@@ -41,7 +42,6 @@ export class CdkBadges extends Construct {
         externalModules: ['@aws-sdk/*'],
       },
       description: 'Generate status badges for cdk resources.',
-      entry: 'src/lambda/handler',
       environment: {
         STACK_NAME: Stack.of(this).stackName,
       },
@@ -54,7 +54,7 @@ export class CdkBadges extends Construct {
       timeout: Duration.seconds(10),
     })
 
-    this.lambdaHandler.addFunctionUrl({
+    const functionUrl = this.lambdaHandler.addFunctionUrl({
       authType: aws_lambda.FunctionUrlAuthType.NONE,
     })
 
@@ -64,5 +64,10 @@ export class CdkBadges extends Construct {
         resources: ['*'],
       })
     )
+
+    new CfnOutput(this, 'BadgeUrl', {
+      exportName: 'BadgeUrl',
+      value: functionUrl.url,
+    })
   }
 }

@@ -42,9 +42,17 @@ const project = new awscdk.AwsCdkConstructLibrary({
   stability: 'experimental',
   workflowNodeVersion: '16.x',
 })
+
+project.setScript('cdk', 'cdk')
+project.setScript(
+  'e2e',
+  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never'
+)
+
 new PrettierConfig(project)
 
 new EslintConfig(project, {
+  ignorePaths: ['lib/**/*'],
   projenFileRegex: '{src,test}/**/*.ts',
 })
 

@@ -8,7 +8,7 @@ import {
 } from './cf-badges'
 import { allColors } from './colors'
 
-export const handler = async () => {
+export const lambdaHandler = async () => {
   const { STACK_NAME } = process.env
 
   if (STACK_NAME === undefined || STACK_NAME === '')

@@ -1,11 +1,11 @@
 import { Colors, StatusColors } from './colors'
+import type { Stack, StackStatus } from '@aws-sdk/client-cloudformation'
 import {
   CloudFormationClient,
   DescribeStacksCommand,
-  Stack,
-  StackStatus,
 } from '@aws-sdk/client-cloudformation'
-import { Format, makeBadge } from 'badge-maker'
+import type { Format } from 'badge-maker'
+import { makeBadge } from 'badge-maker'
 
 const cf = new CloudFormationClient({})
 
