@@ -7,9 +7,12 @@ import {
   getCfStatusBadge,
 } from './cf-badges'
 import { allColors } from './colors'
+import type { Handler } from 'aws-lambda'
 
-export const lambdaHandler = async () => {
+export const lambdaHandler: Handler = async (event) => {
   const { STACK_NAME } = process.env
+
+  console.log('STACK_NAME', event)
 
   if (STACK_NAME === undefined || STACK_NAME === '')
     throw new Error('STACK_NAME is not defined.')

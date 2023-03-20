@@ -46,7 +46,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
 project.setScript('cdk', 'cdk')
 project.setScript(
   'e2e',
-  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never'
+  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --profile sandbox-h --require-approval never'
 )
 
 new PrettierConfig(project)

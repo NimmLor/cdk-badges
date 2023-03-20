@@ -1,5 +1,7 @@
 import type { aws_codepipeline } from 'aws-cdk-lib'
 import {
+  aws_events,
+  aws_events_targets,
   aws_iam,
   aws_lambda,
   aws_lambda_nodejs,
@@ -64,6 +66,12 @@ export class CdkBadges extends Construct {
         resources: ['*'],
       })
     )
+
+    new aws_events.Rule(this, 'Rule', {
+      eventPattern: {
+        source: ['aws.cloudformation', 'aws.codepipeline'],
+      },
+    })
 
     new CfnOutput(this, 'BadgeUrl', {
       exportName: 'BadgeUrl',
