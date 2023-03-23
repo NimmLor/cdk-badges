@@ -2,4 +2,4 @@
  <img src="logo.png" alt="cdk-badges" height="300px"/>
 </p>
 
-![Build Status](https://e6afdclt6zb7dx667cpzsm7awu0azqyx.lambda-url.eu-west-1.on.aws/)
+![Build Status](http://badgesintegteststack-badgeshostingbuckete4222a39-14wytck69veqw.s3-website.eu-central-1.amazonaws.com/cf/BadgesIntegTestStack/status.svg)

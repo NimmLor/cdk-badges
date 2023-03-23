@@ -38,8 +38,23 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         svg: getCfStatusBadge({ status, updatedAt }),
       },
       {
+        filekey: getCfBadgeKeys(stackName).namedStatus,
+        svg: getCfStatusBadge(
+          { status, updatedAt },
+          { label: `${stackName} Stack` }
+        ),
+      },
+      {
         filekey: getCfBadgeKeys(stackName).statusDetailed,
         svg: getCfStatusBadge({ status, updatedAt }, {}, true),
+      },
+      {
+        filekey: getCfBadgeKeys(stackName).namedStatusDetailed,
+        svg: getCfStatusBadge(
+          { status, updatedAt },
+          { label: `${stackName} Stack` },
+          true
+        ),
       }
     )
   }
