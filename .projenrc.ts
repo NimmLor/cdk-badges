@@ -23,6 +23,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@atws/projen-config',
     '@atws/tsconfig',
     '@aws-sdk/client-cloudformation@3.188.0',
+    '@aws-sdk/client-s3@3.188.0',
     '@types/aws-lambda',
   ],
   gitignore: ['cdk.out', 'tsconfig.json'],

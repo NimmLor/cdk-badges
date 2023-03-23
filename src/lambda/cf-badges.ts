@@ -169,7 +169,7 @@ export const getCfLastModifiedBadge = (info: StackInfo, props?: BadgeProps) => {
 }
 
 export const getCfStatusBadge = (
-  info: StackInfo,
+  info: Pick<StackInfo, 'status' | 'updatedAt'>,
   props?: BadgeProps,
   includeTimestamp = false
 ) => {

@@ -7,9 +7,9 @@ import {
   getCfStatusBadge,
 } from './cf-badges'
 import { allColors } from './colors'
-import type { Handler } from 'aws-lambda'
+import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 
-export const lambdaHandler: Handler = async (event) => {
+export const functionUrlHandler: APIGatewayProxyHandlerV2 = async (event) => {
   const { STACK_NAME } = process.env
 
   console.log('STACK_NAME', event)
@@ -66,7 +66,6 @@ ${allColors
     body: html,
     headers: {
       'cache-control': 'max-age=300, private',
-      // 'content-type': 'image/svg+xml; charset=utf-8',
       'content-type': 'text/html; charset=utf-8',
     },
     isBase64Encoded: false,

@@ -42,6 +42,7 @@
     "@atws/projen-config": "^1.9.5",
     "@atws/tsconfig": "^1.4.3",
     "@aws-sdk/client-cloudformation": "3.188.0",
+    "@aws-sdk/client-s3": "3.188.0",
     "@types/aws-lambda": "^8.10.113",
     "@types/jest": "^27",
     "@types/node": "^14",

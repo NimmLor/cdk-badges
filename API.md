@@ -85,6 +85,7 @@ Any object.
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#cdk-badges.CdkBadges.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#cdk-badges.CdkBadges.property.hostingBucket">hostingBucket</a></code> | <code>aws-cdk-lib.aws_s3.Bucket</code> | *No description.* |
 | <code><a href="#cdk-badges.CdkBadges.property.lambdaHandler">lambdaHandler</a></code> | <code>aws-cdk-lib.aws_lambda_nodejs.NodejsFunction</code> | *No description.* |
 
 ---
@@ -98,6 +99,16 @@ public readonly node: Node;
 - *Type:* constructs.Node
 
 The tree node.
+
+---
+
+##### `hostingBucket`<sup>Required</sup> <a name="hostingBucket" id="cdk-badges.CdkBadges.property.hostingBucket"></a>
+
+```typescript
+public readonly hostingBucket: Bucket;
+```
+
+- *Type:* aws-cdk-lib.aws_s3.Bucket
 
 ---
 
@@ -128,7 +139,20 @@ const cdkBadgesProps: CdkBadgesProps = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.additionalCfnStacks">additionalCfnStacks</a></code> | <code>string[]</code> | The arn of the stack that should be monitored for changes. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.pipelines">pipelines</a></code> | <code><a href="#cdk-badges.PipelineProps">PipelineProps</a></code> | *No description.* |
+
+---
+
+##### `additionalCfnStacks`<sup>Optional</sup> <a name="additionalCfnStacks" id="cdk-badges.CdkBadgesProps.property.additionalCfnStacks"></a>
+
+```typescript
+public readonly additionalCfnStacks: string[];
+```
+
+- *Type:* string[]
+
+The arn of the stack that should be monitored for changes.
 
 ---
 
