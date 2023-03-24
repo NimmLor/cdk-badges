@@ -61,6 +61,7 @@
     "jsii-diff": "^1.78.1",
     "jsii-docgen": "^7.1.28",
     "jsii-pacmak": "^1.78.1",
+    "lambda-api": "^1.0.1",
     "npm-check-updates": "^16",
     "prettier": "^2.8.4",
     "projen": "^0.68.6",

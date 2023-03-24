@@ -1,74 +1,53 @@
 /* eslint-disable no-console */
 
 import {
-  CfStatusMappings,
   getCfLastModifiedBadge,
+  getCfResourceCountBadge,
   getCfStatusBadge,
 } from './cf-badges'
-import { allColors } from './colors'
-import { getCfStackInfo } from './utils'
+import { StatusColors } from './colors'
+import { getCfStackInfo, getCfStackResources } from './utils'
+import { render } from './webapp/entry'
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
+import createApi from 'lambda-api'
 
-export const functionUrlHandler: APIGatewayProxyHandlerV2 = async (event) => {
-  const { STACK_NAME } = process.env
+const { STACK_NAME } = process.env
 
-  console.log('STACK_NAME', event)
+if (STACK_NAME === undefined || STACK_NAME === '')
+  throw new Error('STACK_NAME is not defined.')
 
-  if (STACK_NAME === undefined || STACK_NAME === '')
-    throw new Error('STACK_NAME is not defined.')
+export const functionUrlHandler: APIGatewayProxyHandlerV2<unknown> = async (
+  event,
+  context
+) => {
+  const api = createApi()
 
-  const info = await getCfStackInfo(STACK_NAME)
+  api.get('/', async (_request, response) => {
+    const [info, resources] = await Promise.all([
+      getCfStackInfo(STACK_NAME),
+      getCfStackResources(STACK_NAME),
+    ])
 
-  const html = `
-<html>
-<head>
-  <title>CDK Badges</title>
-</head>
-<body>
-${getCfLastModifiedBadge(info)}
-${allColors
-  .map(
-    (color, index) =>
-      `<div style="margin-bottom:4px;margin-right:3px;">${getCfLastModifiedBadge(
-        info,
-        {
-          color,
-        }
-      )}${getCfStatusBadge(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        { ...info, status: Object.keys(CfStatusMappings)[index] as any },
-        {
-          color,
-        }
-      )}${getCfStatusBadge(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        { ...info, status: Object.keys(CfStatusMappings)[index] as any },
-        {
-          color,
-        },
-        true
-      )}</div>`
-  )
-  .join('\n')}
-${allColors
-  .map(
-    (color) =>
-      `${getCfLastModifiedBadge(info, { color, style: 'for-the-badge' })}`
-  )
-  .join('\n')}
-${allColors
-  .map((color) => `${getCfLastModifiedBadge({}, { color })}`)
-  .join('\n')}
-</body>
-</html>`
+    const badges = [
+      getCfLastModifiedBadge(info, {}),
+      getCfStatusBadge(info, {}),
+      getCfStatusBadge(info, {}, true),
+      getCfResourceCountBadge(resources.length, {}),
+      getCfResourceCountBadge(0, {}),
+      getCfResourceCountBadge(100, {}),
+      getCfResourceCountBadge(200, {}),
+      getCfResourceCountBadge(300, {}),
+      getCfResourceCountBadge(420, {}),
+      getCfResourceCountBadge(490, {}),
+    ]
 
-  return {
-    body: html,
-    headers: {
-      'cache-control': 'max-age=300, private',
-      'content-type': 'text/html; charset=utf-8',
-    },
-    isBase64Encoded: false,
-    statusCode: 200,
-  }
+    const html = render(`<div class="grid lg:grid-cols-3">
+${badges.map((badge) => `<div class="p-4">${badge}</div>`).join('\n')}
+</div>
+`)
+
+    response.status(200).html(html)
+  })
+
+  return await api.run(event, context)
 }

@@ -25,6 +25,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@aws-sdk/client-cloudformation@3.188.0',
     '@aws-sdk/client-s3@3.188.0',
     '@types/aws-lambda',
+    'lambda-api',
   ],
   gitignore: ['cdk.out', 'tsconfig.json'],
   jest: true,

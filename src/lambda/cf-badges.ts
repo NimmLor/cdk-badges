@@ -154,8 +154,8 @@ export const getCfStatusBadge = (
 
 export const getCfResourceCountBadge = (count: number, props?: BadgeProps) => {
   let color: string = StatusColors.success.full
-  if (count > 400) color = StatusColors.warning.full
-  if (count > 500) color = StatusColors.error.full
+  if (count >= 400) color = StatusColors.warning.light
+  if (count >= 460) color = StatusColors.error.light
   if (props?.color !== undefined) color = props.color
 
   return makeBadge({
