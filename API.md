@@ -140,7 +140,8 @@ const cdkBadgesProps: CdkBadgesProps = { ... }
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.additionalCfnStacks">additionalCfnStacks</a></code> | <code>string[]</code> | The arn of the stack that should be monitored for changes. |
-| <code><a href="#cdk-badges.CdkBadgesProps.property.pipelines">pipelines</a></code> | <code><a href="#cdk-badges.PipelineProps">PipelineProps</a></code> | *No description.* |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.cacheControl">cacheControl</a></code> | <code>string</code> | The cache control header to use when writing badges to S3. |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.localization">localization</a></code> | <code><a href="#cdk-badges.LocalizationSettings">LocalizationSettings</a></code> | *No description.* |
 
 ---
 
@@ -156,17 +157,30 @@ The arn of the stack that should be monitored for changes.
 
 ---
 
-##### `pipelines`<sup>Optional</sup> <a name="pipelines" id="cdk-badges.CdkBadgesProps.property.pipelines"></a>
+##### `cacheControl`<sup>Optional</sup> <a name="cacheControl" id="cdk-badges.CdkBadgesProps.property.cacheControl"></a>
 
 ```typescript
-public readonly pipelines: PipelineProps;
+public readonly cacheControl: string;
 ```
 
-- *Type:* <a href="#cdk-badges.PipelineProps">PipelineProps</a>
+- *Type:* string
+- *Default:* 'max-age=300, private'
+
+The cache control header to use when writing badges to S3.
 
 ---
 
-### PipelineProps <a name="PipelineProps" id="cdk-badges.PipelineProps"></a>
+##### `localization`<sup>Optional</sup> <a name="localization" id="cdk-badges.CdkBadgesProps.property.localization"></a>
+
+```typescript
+public readonly localization: LocalizationSettings;
+```
+
+- *Type:* <a href="#cdk-badges.LocalizationSettings">LocalizationSettings</a>
+
+---
+
+### LocalizationSettings <a name="LocalizationSettings" id="cdk-badges.LocalizationSettings"></a>
 
 A map of pipelines consisting of an id and the pipeline itself.
 
@@ -182,12 +196,74 @@ The id is used to identify pipelines and their badges.
 ```
 
 
-#### Initializer <a name="Initializer" id="cdk-badges.PipelineProps.Initializer"></a>
+#### Initializer <a name="Initializer" id="cdk-badges.LocalizationSettings.Initializer"></a>
 
 ```typescript
-import { PipelineProps } from 'cdk-badges'
+import { LocalizationSettings } from 'cdk-badges'
 
-const pipelineProps: PipelineProps = { ... }
+const localizationSettings: LocalizationSettings = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-badges.LocalizationSettings.property.hour12">hour12</a></code> | <code>boolean</code> | Whether to use 12 hour time format. |
+| <code><a href="#cdk-badges.LocalizationSettings.property.locale">locale</a></code> | <code>string</code> | The locale to use when generating badges. |
+| <code><a href="#cdk-badges.LocalizationSettings.property.timezone">timezone</a></code> | <code>string</code> | The timezone to use when generating badges. |
+
+---
+
+##### `hour12`<sup>Optional</sup> <a name="hour12" id="cdk-badges.LocalizationSettings.property.hour12"></a>
+
+```typescript
+public readonly hour12: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Whether to use 12 hour time format.
+
+---
+
+##### `locale`<sup>Optional</sup> <a name="locale" id="cdk-badges.LocalizationSettings.property.locale"></a>
+
+```typescript
+public readonly locale: string;
+```
+
+- *Type:* string
+- *Default:* 'en-GB'
+
+The locale to use when generating badges.
+
+---
+
+*Example*
+
+```typescript
+'de-AT'
+```
+
+
+##### `timezone`<sup>Optional</sup> <a name="timezone" id="cdk-badges.LocalizationSettings.property.timezone"></a>
+
+```typescript
+public readonly timezone: string;
+```
+
+- *Type:* string
+- *Default:* 'UTC'
+
+The timezone to use when generating badges.
+
+---
+
+*Example*
+
+```typescript
+'Europe/Vienna'
 ```
 
 

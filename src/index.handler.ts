@@ -1,26 +1,32 @@
+/* eslint-disable no-console */
 import { eventsHandler } from './lambda/events-handler'
 import { functionUrlHandler } from './lambda/webapp-handler'
 import type {
   APIGatewayProxyEventV2,
-  APIGatewayProxyHandlerV2,
   Callback,
   Context,
   EventBridgeEvent,
-  EventBridgeHandler,
+  Handler,
 } from 'aws-lambda'
 
+type HandlerEvents =
+  | APIGatewayProxyEventV2
+  | EventBridgeEvent<string, unknown>
+  | Record<string, unknown>
+  | {}
+
 const isApiGatewayProxyEvent = (
-  event: APIGatewayProxyEventV2 | EventBridgeEvent<string, unknown>
-): event is APIGatewayProxyEventV2 => event.version === '2.0'
+  event: HandlerEvents
+): event is APIGatewayProxyEventV2 =>
+  'version' in event && event.version === '2.0'
 
 const isEventBridgeEvent = (
-  event: APIGatewayProxyEventV2 | EventBridgeEvent<string, unknown>
-): event is EventBridgeEvent<string, unknown> => event.version === '0'
+  event: HandlerEvents
+): event is EventBridgeEvent<string, unknown> =>
+  'version' in event && event.version === '0'
 
-export const handler:
-  | APIGatewayProxyHandlerV2
-  | EventBridgeHandler<string, unknown, unknown> = async (
-  event: APIGatewayProxyEventV2 | EventBridgeEvent<string, unknown>,
+export const handler: Handler = async (
+  event: HandlerEvents,
   context: Context,
   callback: Callback
 ) => {
@@ -28,6 +34,9 @@ export const handler:
     return await functionUrlHandler(event, context, callback)
   } else if (isEventBridgeEvent(event)) {
     return await eventsHandler(event, context, callback)
+  } else {
+    console.error('Unknown event type', event)
+    console.log(JSON.stringify(event, null, 2))
   }
 
   return null

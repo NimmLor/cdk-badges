@@ -1,30 +1,14 @@
 import { Colors, StatusColors } from './colors'
-import type { Stack, StackStatus } from '@aws-sdk/client-cloudformation'
-import {
-  CloudFormationClient,
-  DescribeStacksCommand,
-} from '@aws-sdk/client-cloudformation'
+import type { StackInfo } from './utils'
+import type { StackStatus } from '@aws-sdk/client-cloudformation'
 import type { Format } from 'badge-maker'
 import { makeBadge } from 'badge-maker'
-
-const cf = new CloudFormationClient({})
 
 type BadgeProps = {
   color?: string
   label?: string
   style?: Format['style']
 }
-
-type StackInfo = Partial<{
-  createdAt: Stack['CreationTime']
-  driftInfo: Stack['DriftInformation']
-  found: boolean
-  outputs: Stack['Outputs']
-  stackName: string
-  status: keyof typeof StackStatus
-  statusReason: Stack['StackStatusReason']
-  updatedAt: Stack['LastUpdatedTime']
-}>
 
 export const CfStatusMappings = {
   CREATE_COMPLETE: {
@@ -132,29 +116,6 @@ const getStackStatusAppearance = (stackStatus?: keyof typeof StackStatus) => {
   }
 }
 
-export const getCfStackInfo = async (stackName: string): Promise<StackInfo> => {
-  const stack = (
-    await cf.send(new DescribeStacksCommand({ StackName: stackName }))
-  ).Stacks?.[0]
-
-  if (!stack)
-    return {
-      found: false,
-      stackName,
-    }
-
-  return {
-    createdAt: stack.CreationTime,
-    driftInfo: stack.DriftInformation,
-    found: true,
-    outputs: stack.Outputs,
-    stackName,
-    status: stack.StackStatus as keyof typeof StackStatus,
-    statusReason: stack.StackStatusReason,
-    updatedAt: stack.LastUpdatedTime,
-  }
-}
-
 export const getCfLastModifiedBadge = (info: StackInfo, props?: BadgeProps) => {
   const message = info.updatedAt?.toDateString() ?? 'unknown'
   return makeBadge({
@@ -184,8 +145,23 @@ export const getCfStatusBadge = (
       info.updatedAt !== undefined
         ? `${message} at ${info.updatedAt.toLocaleString('de-AT', {
             hour12: false,
+            timeZone: 'Europe/Vienna',
           })}`
         : message,
+    style: props?.style ?? 'flat-square',
+  })
+}
+
+export const getCfResourceCountBadge = (count: number, props?: BadgeProps) => {
+  let color: string = StatusColors.success.full
+  if (count > 400) color = StatusColors.warning.full
+  if (count > 500) color = StatusColors.error.full
+  if (props?.color !== undefined) color = props.color
+
+  return makeBadge({
+    color,
+    label: props?.label ?? 'CloudFormation',
+    message: `${count} Resources`,
     style: props?.style ?? 'flat-square',
   })
 }

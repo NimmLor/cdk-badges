@@ -3,10 +3,10 @@
 import {
   CfStatusMappings,
   getCfLastModifiedBadge,
-  getCfStackInfo,
   getCfStatusBadge,
 } from './cf-badges'
 import { allColors } from './colors'
+import { getCfStackInfo } from './utils'
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 
 export const functionUrlHandler: APIGatewayProxyHandlerV2 = async (event) => {

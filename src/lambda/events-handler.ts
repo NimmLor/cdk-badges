@@ -2,6 +2,7 @@
 
 import { getCfStatusBadge } from './cf-badges'
 import { getCfBadgeKeys } from './filenames'
+import { updateStackResourceCountBadge } from './trigger-handler'
 import { writeBadgeToS3 } from './utils'
 import type { StackStatus } from '@aws-sdk/client-cloudformation'
 import type { EventBridgeEvent, EventBridgeHandler } from 'aws-lambda'
@@ -25,8 +26,12 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
   event
 ) => {
   const badges: Array<{ filekey: string; svg: string }> = []
+  const promises: Array<Promise<unknown>> = []
 
   if (isCfStackEvent(event)) {
+    // update resource count badge
+    promises.push(updateStackResourceCountBadge())
+
     const status = event.detail['status-details'].status
     const updatedAt = new Date(event.time)
     const stackName =
@@ -59,11 +64,13 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
     )
   }
 
-  await Promise.all(
-    badges.map(
+  promises.push(
+    ...badges.map(
       async ({ filekey, svg }) => await writeBadgeToS3({ filekey, svg })
     )
   )
+
+  await Promise.all(promises)
 
   return
 }
