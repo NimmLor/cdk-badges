@@ -11,20 +11,6 @@ import {
 } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 
-/**
- * A map of pipelines consisting of an id and the pipeline itself.
- * The id is used to identify pipelines and their badges.
- *
- * @example
- * {
- *  'webapp': webappPipeline,
- *  'backend': backendPipeline,
- * }
- */
-// export interface PipelineProps {
-//   [key: string]: aws_codepipeline.Pipeline
-// }
-
 export interface LocalizationSettings {
   /**
    * Whether to use 12 hour time format.
@@ -56,11 +42,35 @@ export interface LocalizationSettings {
   readonly timezone?: string
 }
 
+/**
+ * The style of the badge to generate.
+ *
+ * @default 'flat-square'
+ */
+export type BadgeStyle =
+  | 'flat-square'
+  | 'flat'
+  | 'for-the-badge'
+  | 'plastic'
+  | 'social'
+
 export interface CdkBadgesProps {
+  /**
+   * Whether to add a preview webapp to the stack.
+   *
+   * @default true
+   */
+  readonly addPreviewWebapp?: boolean
   /**
    * The arn of the stack that should be monitored for changes.
    */
   readonly additionalCfnStacks?: string[]
+
+  /**
+   * The style of the badge to generate.
+   */
+  readonly badgeStyle?: BadgeStyle
+
   /**
    * The cache control header to use when writing badges to S3.
    *
@@ -68,6 +78,9 @@ export interface CdkBadgesProps {
    */
   readonly cacheControl?: string
 
+  /**
+   * The formatting of the timestamps used in the badges.
+   */
   readonly localization?: LocalizationSettings
 }
 
@@ -79,7 +92,13 @@ export class CdkBadges extends Construct {
   public constructor(scope: Stack, id: string, props: CdkBadgesProps) {
     super(scope, id)
 
-    const { additionalCfnStacks, cacheControl, localization } = props
+    const {
+      additionalCfnStacks,
+      cacheControl,
+      localization,
+      badgeStyle,
+      addPreviewWebapp,
+    } = props
 
     this.hostingBucket = new aws_s3.Bucket(this, 'hostingBucket', {
       publicReadAccess: true,
@@ -91,6 +110,7 @@ export class CdkBadges extends Construct {
       },
       description: 'Generate status badges for cdk resources.',
       environment: {
+        BADGE_STYLE: badgeStyle ?? 'flat-square',
         BASE_URL: `https://${this.hostingBucket.bucketName}.s3.${
           Stack.of(this).region
         }.amazonaws.com`,
@@ -109,10 +129,6 @@ export class CdkBadges extends Construct {
         aws_lambda.RuntimeFamily.NODEJS
       ),
       timeout: Duration.seconds(10),
-    })
-
-    const functionUrl = this.lambdaHandler.addFunctionUrl({
-      authType: aws_lambda.FunctionUrlAuthType.NONE,
     })
 
     this.lambdaHandler.addToRolePolicy(
@@ -142,7 +158,7 @@ export class CdkBadges extends Construct {
 
     const eventRule = new aws_events.Rule(this, 'Rule', {
       eventPattern: {
-        source: ['aws.cloudformation', 'aws.codepipeline'],
+        source: ['aws.cloudformation'],
       },
     })
 
@@ -153,9 +169,16 @@ export class CdkBadges extends Construct {
 
     eventRule.addTarget(target)
 
-    new CfnOutput(this, 'BadgeUrl', {
-      value: functionUrl.url,
-    })
+    if (addPreviewWebapp !== false) {
+      const functionUrl = this.lambdaHandler.addFunctionUrl({
+        authType: aws_lambda.FunctionUrlAuthType.NONE,
+      })
+
+      new CfnOutput(this, 'BadgeUrl', {
+        value: functionUrl.url,
+      })
+    }
+
     new CfnOutput(this, 'BadgeBucket', {
       value: this.hostingBucket.bucketWebsiteUrl,
     })
