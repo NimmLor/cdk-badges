@@ -21,10 +21,9 @@ export const render = (content: string) => {
   </style>
 </head>
 <body>
-<div class="mx-4 my-8">
-${content}
-</div>
+  <div class="mx-4 my-8">
+    ${content}
+  </div>
 </body>
-</html>
-`
+</html>`
 }

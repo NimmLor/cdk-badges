@@ -41,6 +41,12 @@ export interface LocalizationSettings {
    */
   readonly locale?: string
   /**
+   * Wheter to show seconds in the time.
+   *
+   * @default false
+   */
+  readonly showSeconds?: boolean
+  /**
    * The timezone to use when generating badges.
    *
    *
@@ -92,6 +98,7 @@ export class CdkBadges extends Construct {
         CACHE_CONTROL: cacheControl ?? 'max-age=300, private',
         HOUR12: localization?.hour12?.toString() ?? 'false',
         LOCALE: localization?.locale ?? 'en-GB',
+        SHOW_SECONDS: localization?.showSeconds?.toString() ?? 'false',
         STACK_NAME: Stack.of(this).stackName,
         TIMEZONE: localization?.timezone ?? 'UTC',
       },
@@ -125,7 +132,6 @@ export class CdkBadges extends Construct {
           's3:PutObjectAcl',
           's3:PutObjectTagging',
           's3:ListBucket',
-          // 's3:GetObject',
         ],
         resources: [
           this.hostingBucket.bucketArn,

@@ -210,6 +210,7 @@ const localizationSettings: LocalizationSettings = { ... }
 | --- | --- | --- |
 | <code><a href="#cdk-badges.LocalizationSettings.property.hour12">hour12</a></code> | <code>boolean</code> | Whether to use 12 hour time format. |
 | <code><a href="#cdk-badges.LocalizationSettings.property.locale">locale</a></code> | <code>string</code> | The locale to use when generating badges. |
+| <code><a href="#cdk-badges.LocalizationSettings.property.showSeconds">showSeconds</a></code> | <code>boolean</code> | Wheter to show seconds in the time. |
 | <code><a href="#cdk-badges.LocalizationSettings.property.timezone">timezone</a></code> | <code>string</code> | The timezone to use when generating badges. |
 
 ---
@@ -246,6 +247,19 @@ The locale to use when generating badges.
 'de-AT'
 ```
 
+
+##### `showSeconds`<sup>Optional</sup> <a name="showSeconds" id="cdk-badges.LocalizationSettings.property.showSeconds"></a>
+
+```typescript
+public readonly showSeconds: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Wheter to show seconds in the time.
+
+---
 
 ##### `timezone`<sup>Optional</sup> <a name="timezone" id="cdk-badges.LocalizationSettings.property.timezone"></a>
 

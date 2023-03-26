@@ -28,6 +28,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
   const badges: Array<{ filekey: string; svg: string }> = []
   const promises: Array<Promise<unknown>> = []
 
+  console.log('Received event:', JSON.stringify(event, null, 2))
+
   if (isCfStackEvent(event)) {
     // update resource count badge
     promises.push(updateStackResourceCountBadge())

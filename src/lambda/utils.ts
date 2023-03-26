@@ -33,6 +33,7 @@ const {
   BASE_URL,
   STACK_NAME,
   BUCKET_NAME,
+  SHOW_SECONDS,
 } = process.env
 
 if (
@@ -42,7 +43,8 @@ if (
   TIMEZONE === undefined ||
   BASE_URL === undefined ||
   STACK_NAME === undefined ||
-  BUCKET_NAME === undefined
+  BUCKET_NAME === undefined ||
+  SHOW_SECONDS === undefined
 ) {
   throw new Error('Missing required environment variables')
 }
@@ -57,10 +59,14 @@ export const LambdaEnvironment = {
   TIMEZONE,
 }
 
+/**
+ * Get the settings for localization
+ */
 export const getLocalization = () => {
   return {
     hour12: HOUR12 === 'true',
     locale: LOCALE,
+    showSeconds: SHOW_SECONDS === 'true',
     timezone: TIMEZONE,
   }
 }
@@ -92,6 +98,9 @@ export const writeBadgeToS3 = async ({
   )
 }
 
+/**
+ * Get information about a CloudFormation stack
+ */
 export const getCfStackInfo = async (stackName: string): Promise<StackInfo> => {
   const stack = (
     await cf.send(new DescribeStacksCommand({ StackName: stackName }))
@@ -115,6 +124,9 @@ export const getCfStackInfo = async (stackName: string): Promise<StackInfo> => {
   }
 }
 
+/**
+ * Get all resources for a CloudFormation stack
+ */
 export const getCfStackResources = async (stackName: string) => {
   const resources = (
     await cf.send(new DescribeStackResourcesCommand({ StackName: stackName }))
@@ -125,6 +137,9 @@ export const getCfStackResources = async (stackName: string) => {
   return resources
 }
 
+/**
+ * List all badges in S3
+ */
 export const listS3Badges = async (prefix?: string) => {
   const items = await s3.send(
     new ListObjectsCommand({ Bucket: BUCKET_NAME, Prefix: prefix })
@@ -138,4 +153,27 @@ export const listS3Badges = async (prefix?: string) => {
     })) ?? []
 
   return badges
+}
+
+/**
+ * Get a formatted date/time string for the supplied localization settings
+ */
+export const formatDateTime = (
+  timestamp: Date | number | string | undefined
+) => {
+  const { hour12, locale, showSeconds, timezone } = getLocalization()
+
+  if (timestamp === undefined) return 'unknown'
+
+  return new Date(timestamp).toLocaleString(locale, {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12,
+    minute: '2-digit',
+    month: '2-digit',
+    timeZone: timezone,
+    timeZoneName: 'shortOffset',
+    year: '2-digit',
+    ...(showSeconds ? { second: '2-digit' } : {}),
+  })
 }

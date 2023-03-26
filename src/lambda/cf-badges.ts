@@ -1,5 +1,6 @@
 import { Colors, StatusColors } from './colors'
 import type { StackInfo } from './utils'
+import { formatDateTime } from './utils'
 import type { StackStatus } from '@aws-sdk/client-cloudformation'
 import type { Format } from 'badge-maker'
 import { makeBadge } from 'badge-maker'
@@ -105,6 +106,9 @@ export const CfStatusMappings = {
   },
 }
 
+/**
+ * Get the appearance of a CloudFormation stack status
+ */
 const getStackStatusAppearance = (stackStatus?: keyof typeof StackStatus) => {
   if (stackStatus !== undefined && stackStatus in CfStatusMappings) {
     return CfStatusMappings[stackStatus]
@@ -117,7 +121,7 @@ const getStackStatusAppearance = (stackStatus?: keyof typeof StackStatus) => {
 }
 
 export const getCfLastModifiedBadge = (info: StackInfo, props?: BadgeProps) => {
-  const message = info.updatedAt?.toDateString() ?? 'unknown'
+  const message = formatDateTime(info.updatedAt)
   return makeBadge({
     color:
       message === 'unknown'
@@ -143,10 +147,7 @@ export const getCfStatusBadge = (
       message !== 'unknown' &&
       includeTimestamp === true &&
       info.updatedAt !== undefined
-        ? `${message} at ${info.updatedAt.toLocaleString('de-AT', {
-            hour12: false,
-            timeZone: 'Europe/Vienna',
-          })}`
+        ? `${message} at ${formatDateTime(info.updatedAt)}`
         : message,
     style: props?.style ?? 'flat-square',
   })
