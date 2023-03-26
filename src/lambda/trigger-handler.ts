@@ -1,11 +1,8 @@
 import { getCfResourceCountBadge } from './cf-badges'
 import { getCfBadgeKeys } from './filenames'
-import { getCfStackResources, writeBadgeToS3 } from './utils'
+import { getCfStackResources, LambdaEnvironment, writeBadgeToS3 } from './utils'
 
-const STACK_NAME = process.env.STACK_NAME
-
-if (STACK_NAME === undefined || STACK_NAME === '')
-  throw new Error('STACK_NAME is not defined.')
+const { STACK_NAME } = LambdaEnvironment
 
 export const updateStackResourceCountBadge = async () => {
   const resources = await getCfStackResources(STACK_NAME)

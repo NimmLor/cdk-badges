@@ -50,6 +50,10 @@ project.setScript(
   'e2e',
   'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --profile sandbox-h --require-approval never'
 )
+project.setScript(
+  'deploy',
+  'yarn cdk deploy --app "npx ts-node --prefer-ts-exts ./src/integ.default.ts" --profile sandbox-h --require-approval never --hotswap'
+)
 
 new PrettierConfig(project)
 

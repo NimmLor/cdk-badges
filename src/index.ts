@@ -77,7 +77,6 @@ export class CdkBadges extends Construct {
 
     this.hostingBucket = new aws_s3.Bucket(this, 'hostingBucket', {
       publicReadAccess: true,
-      websiteIndexDocument: 'index.html',
     })
 
     this.lambdaHandler = new aws_lambda_nodejs.NodejsFunction(this, 'handler', {
@@ -86,6 +85,9 @@ export class CdkBadges extends Construct {
       },
       description: 'Generate status badges for cdk resources.',
       environment: {
+        BASE_URL: `https://${this.hostingBucket.bucketName}.s3.${
+          Stack.of(this).region
+        }.amazonaws.com`,
         BUCKET_NAME: this.hostingBucket.bucketName,
         CACHE_CONTROL: cacheControl ?? 'max-age=300, private',
         HOUR12: localization?.hour12?.toString() ?? 'false',
@@ -118,8 +120,17 @@ export class CdkBadges extends Construct {
 
     this.lambdaHandler.addToRolePolicy(
       new aws_iam.PolicyStatement({
-        actions: ['s3:PutObject', 's3:PutObjectAcl', 's3:PutObjectTagging'],
-        resources: [`${this.hostingBucket.bucketArn}/*`],
+        actions: [
+          's3:PutObject',
+          's3:PutObjectAcl',
+          's3:PutObjectTagging',
+          's3:ListBucket',
+          // 's3:GetObject',
+        ],
+        resources: [
+          this.hostingBucket.bucketArn,
+          `${this.hostingBucket.bucketArn}/*`,
+        ],
       })
     )
 

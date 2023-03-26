@@ -5,7 +5,11 @@ import {
   DescribeStackResourcesCommand,
   DescribeStacksCommand,
 } from '@aws-sdk/client-cloudformation'
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import {
+  ListObjectsCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3'
 
 export type StackInfo = Partial<{
   createdAt: Stack['CreationTime']
@@ -19,15 +23,39 @@ export type StackInfo = Partial<{
 }>
 
 const cf = new CloudFormationClient({})
+const s3 = new S3Client({})
 
-const BUCKET_NAME = process.env.BUCKET_NAME
-const { CACHE_CONTROL, HOUR12, LOCALE, TIMEZONE } = process.env
+const {
+  CACHE_CONTROL,
+  HOUR12,
+  LOCALE,
+  TIMEZONE,
+  BASE_URL,
+  STACK_NAME,
+  BUCKET_NAME,
+} = process.env
 
-if (BUCKET_NAME === undefined || BUCKET_NAME === '')
-  throw new Error('BUCKET_NAME is not defined.')
+if (
+  CACHE_CONTROL === undefined ||
+  HOUR12 === undefined ||
+  LOCALE === undefined ||
+  TIMEZONE === undefined ||
+  BASE_URL === undefined ||
+  STACK_NAME === undefined ||
+  BUCKET_NAME === undefined
+) {
+  throw new Error('Missing required environment variables')
+}
 
-if (CACHE_CONTROL === undefined || CACHE_CONTROL === '')
-  throw new Error('CACHE_CONTROL is not defined.')
+export const LambdaEnvironment = {
+  BASE_URL,
+  BUCKET_NAME,
+  CACHE_CONTROL,
+  HOUR12,
+  LOCALE,
+  STACK_NAME,
+  TIMEZONE,
+}
 
 export const getLocalization = () => {
   return {
@@ -36,8 +64,6 @@ export const getLocalization = () => {
     timezone: TIMEZONE,
   }
 }
-
-const s3 = new S3Client({})
 
 /**
  * Write a badge to S3
@@ -97,4 +123,19 @@ export const getCfStackResources = async (stackName: string) => {
   if (!resources) return []
 
   return resources
+}
+
+export const listS3Badges = async (prefix?: string) => {
+  const items = await s3.send(
+    new ListObjectsCommand({ Bucket: BUCKET_NAME, Prefix: prefix })
+  )
+
+  const badges =
+    items.Contents?.map((item) => ({
+      key: item.Key,
+      updatedAt: item.LastModified,
+      url: `${BASE_URL}/${item.Key}`,
+    })) ?? []
+
+  return badges
 }
