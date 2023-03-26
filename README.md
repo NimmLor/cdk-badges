@@ -43,4 +43,8 @@ new CdkBadges(stack, 'Badges', {
 - Cloudformation stack status
 - Cloudformation resource count
 
+### Web UI
+
+The web ui shows all available badges in the specified s3 bucket. It can be accessed via the cloudformation output.
+
 [![web-ui](ui.png)](https://github.com/NimmLor/cdk-badges)
