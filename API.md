@@ -140,8 +140,10 @@ const cdkBadgesProps: CdkBadgesProps = { ... }
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.additionalCfnStacks">additionalCfnStacks</a></code> | <code>string[]</code> | The arn of the stack that should be monitored for changes. |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.addPreviewWebapp">addPreviewWebapp</a></code> | <code>boolean</code> | Whether to add a preview webapp to the stack. |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.badgeStyle">badgeStyle</a></code> | <code>string</code> | The style of the badge to generate. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.cacheControl">cacheControl</a></code> | <code>string</code> | The cache control header to use when writing badges to S3. |
-| <code><a href="#cdk-badges.CdkBadgesProps.property.localization">localization</a></code> | <code><a href="#cdk-badges.LocalizationSettings">LocalizationSettings</a></code> | *No description.* |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.localization">localization</a></code> | <code><a href="#cdk-badges.LocalizationSettings">LocalizationSettings</a></code> | The formatting of the timestamps used in the badges. |
 
 ---
 
@@ -154,6 +156,31 @@ public readonly additionalCfnStacks: string[];
 - *Type:* string[]
 
 The arn of the stack that should be monitored for changes.
+
+---
+
+##### `addPreviewWebapp`<sup>Optional</sup> <a name="addPreviewWebapp" id="cdk-badges.CdkBadgesProps.property.addPreviewWebapp"></a>
+
+```typescript
+public readonly addPreviewWebapp: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether to add a preview webapp to the stack.
+
+---
+
+##### `badgeStyle`<sup>Optional</sup> <a name="badgeStyle" id="cdk-badges.CdkBadgesProps.property.badgeStyle"></a>
+
+```typescript
+public readonly badgeStyle: string;
+```
+
+- *Type:* string
+
+The style of the badge to generate.
 
 ---
 
@@ -178,23 +205,11 @@ public readonly localization: LocalizationSettings;
 
 - *Type:* <a href="#cdk-badges.LocalizationSettings">LocalizationSettings</a>
 
+The formatting of the timestamps used in the badges.
+
 ---
 
 ### LocalizationSettings <a name="LocalizationSettings" id="cdk-badges.LocalizationSettings"></a>
-
-A map of pipelines consisting of an id and the pipeline itself.
-
-The id is used to identify pipelines and their badges.
-
-*Example*
-
-```typescript
-{
- 'webapp': webappPipeline,
- 'backend': backendPipeline,
-}
-```
-
 
 #### Initializer <a name="Initializer" id="cdk-badges.LocalizationSettings.Initializer"></a>
 
