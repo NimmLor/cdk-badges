@@ -105,7 +105,7 @@ export class CdkBadges extends Construct {
     })
 
     this.lambdaHandler = new aws_lambda.Function(this, 'Handler', {
-      code: aws_lambda.Code.fromAsset('lambda/dist'),
+      code: aws_lambda.Code.fromAsset('lib/lambda'),
       description: 'Generate status badges for cdk resources.',
       environment: {
         BADGE_STYLE: badgeStyle ?? 'flat-square',

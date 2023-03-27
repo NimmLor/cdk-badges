@@ -56,7 +56,7 @@ project.setScript(
 const buildLambdaTask = project.preCompileTask
 
 buildLambdaTask.exec(
-  'esbuild lambda/src/index.ts --bundle --outdir=lambda/dist --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
+  'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
 )
 
 project.tsconfigDev.addInclude('lambda/src/**/*.ts')
@@ -76,11 +76,26 @@ new VscodeConfig(project, {
   },
 })
 
+const ignorePatterns = ['.yarn/cache', '.yarn/install-state.gz']
+
 new GitConfig(project)
-project.gitignore.addPatterns(
-  '.yarn/cache',
-  '.yarn/install-state.gz',
-  'lambda/dist'
+project.gitignore.addPatterns(...ignorePatterns)
+project.npmignore?.addPatterns(
+  ...ignorePatterns,
+  '.editorconfig',
+  '.eslintignore',
+  '.eslintrc',
+  '.gitattributes',
+  '.prettierrc.js',
+  '.projenrc.ts',
+  '.yarn',
+  '.yarnrc.yml',
+  'lambda',
+  '!dist/lambda',
+  'lib',
+  'logo.png',
+  'ui.png',
+  'yarn-error.log'
 )
 
 project.synth()

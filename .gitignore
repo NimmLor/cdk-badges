@@ -59,4 +59,3 @@ tsconfig.json
 !/.vscode/extensions.json
 .yarn/cache
 .yarn/install-state.gz
-lambda/dist
