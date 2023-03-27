@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import { eventsHandler } from './lambda/events-handler'
-import { functionUrlHandler } from './lambda/webapp-handler'
+import { eventsHandler } from './events-handler'
+import { functionUrlHandler } from './webapp-handler'
 import type {
   APIGatewayProxyEventV2,
   Callback,

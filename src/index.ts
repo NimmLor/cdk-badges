@@ -1,9 +1,9 @@
+import type { aws_lambda_nodejs } from 'aws-cdk-lib'
 import {
   aws_events,
   aws_events_targets,
   aws_iam,
   aws_lambda,
-  aws_lambda_nodejs,
   aws_s3,
   CfnOutput,
   Duration,
@@ -104,10 +104,8 @@ export class CdkBadges extends Construct {
       publicReadAccess: true,
     })
 
-    this.lambdaHandler = new aws_lambda_nodejs.NodejsFunction(this, 'handler', {
-      bundling: {
-        externalModules: ['@aws-sdk/*'],
-      },
+    this.lambdaHandler = new aws_lambda.Function(this, 'Handler', {
+      code: aws_lambda.Code.fromAsset('lambda/dist'),
       description: 'Generate status badges for cdk resources.',
       environment: {
         BADGE_STYLE: badgeStyle ?? 'flat-square',
@@ -122,7 +120,8 @@ export class CdkBadges extends Construct {
         STACK_NAME: Stack.of(this).stackName,
         TIMEZONE: localization?.timezone ?? 'UTC',
       },
-      functionName: `${Stack.of(this).stackName}-CdkBadges`,
+      // functionName: `${Stack.of(this).stackName}-CdkBadges`,
+      handler: 'index.handler',
       memorySize: 256,
       runtime: new aws_lambda.Runtime(
         'nodejs18.x',

@@ -52,16 +52,20 @@ project.setScript(
   'e2e',
   'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --profile sandbox-h --require-approval never'
 )
-project.setScript(
-  'deploy',
-  'yarn cdk deploy --app "npx ts-node --prefer-ts-exts ./src/integ.default.ts" --profile sandbox-h --require-approval never --hotswap'
+
+const buildLambdaTask = project.preCompileTask
+
+buildLambdaTask.exec(
+  'esbuild lambda/src/index.ts --bundle --outdir=lambda/dist --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
 )
+
+project.tsconfigDev.addInclude('lambda/src/**/*.ts')
 
 new PrettierConfig(project)
 
 new EslintConfig(project, {
   ignorePaths: ['lib/**/*'],
-  projenFileRegex: '{src,test}/**/*.ts',
+  projenFileRegex: '{src,test,lambda}/**/*.ts',
 })
 
 new VscodeConfig(project, {
@@ -73,6 +77,10 @@ new VscodeConfig(project, {
 })
 
 new GitConfig(project)
-project.gitignore.addPatterns('.yarn/cache', '.yarn/install-state.gz')
+project.gitignore.addPatterns(
+  '.yarn/cache',
+  '.yarn/install-state.gz',
+  'lambda/dist'
+)
 
 project.synth()
