@@ -10,6 +10,7 @@ import {
   Stack,
 } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
+import * as path from 'path'
 
 export interface LocalizationSettings {
   /**
@@ -105,7 +106,7 @@ export class CdkBadges extends Construct {
     })
 
     this.lambdaHandler = new aws_lambda.Function(this, 'Handler', {
-      code: aws_lambda.Code.fromAsset('lib/lambda'),
+      code: aws_lambda.Code.fromAsset(path.join(__dirname, '../lib/lambda')),
       description: 'Generate status badges for cdk resources.',
       environment: {
         BADGE_STYLE: badgeStyle ?? 'flat-square',
