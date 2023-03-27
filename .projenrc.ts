@@ -5,6 +5,7 @@ import {
   VscodeConfig,
 } from '@atws/projen-config'
 import { awscdk } from 'projen'
+import { NodePackageManager } from 'projen/lib/javascript'
 
 // aws lambda function url support added in v2.21.0
 // @see https://github.com/aws/aws-cdk/releases/tag/v2.21.0
@@ -38,6 +39,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
 
   majorVersion: 0,
   name: 'cdk-badges',
+  packageManager: NodePackageManager.YARN2,
   packageName: 'cdk-badges',
   projenrcTs: true,
   repositoryUrl: 'https://github.com/NimmLor/cdk-badges.git',
@@ -71,5 +73,6 @@ new VscodeConfig(project, {
 })
 
 new GitConfig(project)
+project.gitignore.addPatterns('.yarn/cache', '.yarn/install-state.gz')
 
 project.synth()

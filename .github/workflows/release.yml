@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: 16.x
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: yarn install --immutable
       - name: release
         run: npx projen release
       - name: Check for new commits
@@ -98,7 +98,7 @@ jobs:
       - name: Prepare Repository
         run: mv dist .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && yarn install --immutable
       - name: Create js artifact
         run: cd .repo && npx projen package:js
       - name: Collect js Artifact
