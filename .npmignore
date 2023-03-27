@@ -13,13 +13,11 @@ permissions-backup.acl
 !/lib/
 !/lib/**/*.js
 !/lib/**/*.d.ts
-dist
 /tsconfig.json
 /.github/
 /.vscode/
 /.idea/
 /.projenrc.js
-tsconfig.tsbuildinfo
 /.eslintrc.json
 !.jsii
 .yarn/cache
@@ -33,8 +31,10 @@ tsconfig.tsbuildinfo
 .yarn
 .yarnrc.yml
 lambda
-!dist/lambda
-lib
+!lib/lambda
+!lib
+dist
 logo.png
 ui.png
 yarn-error.log
+tsconfig.tsbuildinfo

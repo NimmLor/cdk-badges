@@ -91,11 +91,13 @@ project.npmignore?.addPatterns(
   '.yarn',
   '.yarnrc.yml',
   'lambda',
-  '!dist/lambda',
-  'lib',
+  '!lib/lambda',
+  '!lib',
+  'dist',
   'logo.png',
   'ui.png',
-  'yarn-error.log'
+  'yarn-error.log',
+  'tsconfig.tsbuildinfo'
 )
 
 project.synth()
