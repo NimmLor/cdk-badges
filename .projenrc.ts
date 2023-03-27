@@ -13,7 +13,6 @@ const cdkVersion = '2.21.0'
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Lorenz Nimmervoll',
   authorAddress: 'admin@nimmervoll.work',
-  bundledDeps: ['badge-maker'],
   cdkVersion,
   defaultReleaseBranch: 'main',
   deps: [],
@@ -26,6 +25,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@aws-sdk/client-s3@3.188.0',
     '@types/aws-lambda',
     'lambda-api',
+    'badge-maker',
   ],
   gitignore: ['cdk.out', 'tsconfig.json'],
   jest: true,

@@ -48,6 +48,10 @@
       "type": "build"
     },
     {
+      "name": "badge-maker",
+      "type": "build"
+    },
+    {
       "name": "constructs",
       "version": "10.0.5",
       "type": "build"
@@ -129,10 +133,6 @@
     {
       "name": "typescript",
       "type": "build"
-    },
-    {
-      "name": "badge-maker",
-      "type": "bundled"
     },
     {
       "name": "@atws/eslint-config",
