@@ -10,6 +10,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
+import type { Format } from 'badge-maker'
 
 export type StackInfo = Partial<{
   createdAt: Stack['CreationTime']
@@ -34,6 +35,7 @@ const {
   STACK_NAME,
   BUCKET_NAME,
   SHOW_SECONDS,
+  BADGE_STYLES,
 } = process.env
 
 if (
@@ -44,12 +46,16 @@ if (
   BASE_URL === undefined ||
   STACK_NAME === undefined ||
   BUCKET_NAME === undefined ||
-  SHOW_SECONDS === undefined
+  SHOW_SECONDS === undefined ||
+  BADGE_STYLES === undefined
 ) {
   throw new Error('Missing required environment variables')
 }
 
 export const LambdaEnvironment = {
+  BADGE_STYLES: BADGE_STYLES.split(';').filter(Boolean) as Array<
+    Format['style'] & string
+  >,
   BASE_URL,
   BUCKET_NAME,
   CACHE_CONTROL,
