@@ -55,7 +55,9 @@ project.setScript(
 
 const buildTask = project.preCompileTask
 
-buildTask.exec('cd frontend && yarn install && yarn build && cd ..')
+buildTask.exec(
+  'cd frontend && yarn install && yarn build --emptyOutDir && cd ..'
+)
 
 buildTask.exec(
   'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'

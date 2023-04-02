@@ -25,22 +25,12 @@ export const functionUrlHandler: APIGatewayProxyHandlerV2<unknown> = async (
       .json({ badges: s3Badges, baseUrl: BASE_URL, stackName: STACK_NAME })
   })
 
-  api.get('*', async (request, response) => {
-    const key = request.path === '/' ? '/index.html' : request.path
-    response.download(
-      `./frontend${key}`,
-      undefined,
-      {
-        headers: {
-          'content-disposition': 'inline',
-        },
+  api.get('*', async (_request, response) => {
+    response.download('./frontend/index.html', undefined, {
+      headers: {
+        'content-disposition': 'inline',
       },
-      (error) => {
-        if (error) {
-          response.redirect(302, '/')
-        }
-      }
-    )
+    })
   })
 
   return await api.run(event, context)
