@@ -6,7 +6,7 @@ import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 import type { Request, Response } from 'lambda-api'
 import createApi from 'lambda-api'
 
-const { STACK_NAME, BASE_URL } = LambdaEnvironment
+const { STACK_NAME, BASE_URL, CACHE_CONTROL } = LambdaEnvironment
 
 export const functionUrlHandler: APIGatewayProxyHandlerV2<unknown> = async (
   event,
@@ -16,6 +16,7 @@ export const functionUrlHandler: APIGatewayProxyHandlerV2<unknown> = async (
 
   api.use((_request: Request, response: Response, next) => {
     response.cors({ headers: '*', methods: 'GET' })
+    response.header('Cache-Control', CACHE_CONTROL)
     next()
   })
 
