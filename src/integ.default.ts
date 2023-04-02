@@ -9,7 +9,7 @@ new CdkBadges(stack, 'Badges', {
     'arn:aws:cloudformation:eu-central-1:123456789012:stack/MyStack/12345678-1234-1234-1234-123456789012',
   ],
   addPreviewWebapp: true,
-  badgeStyle: 'flat-square',
+  badgeStyles: ['flat-square'],
   cacheControl: 'max-age=300',
   localization: {
     hour12: false,

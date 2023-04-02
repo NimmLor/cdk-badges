@@ -3,7 +3,7 @@
 import { getCfStatusBadge } from './cf-badges'
 import { getCfBadgeKeys } from './filenames'
 import { updateStackResourceCountBadge } from './trigger-handler'
-import { writeBadgeToS3 } from './utils'
+import { LambdaEnvironment, writeBadgeToS3 } from './utils'
 import type { StackStatus } from '@aws-sdk/client-cloudformation'
 import type { EventBridgeEvent, EventBridgeHandler } from 'aws-lambda'
 
@@ -39,31 +39,33 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
     const stackName =
       event.detail['stack-id'].split(':stack/')[1].split('/')[0] ?? 'default'
 
-    badges.push(
-      {
-        filekey: getCfBadgeKeys(stackName).status,
-        svg: getCfStatusBadge({ status, updatedAt }),
-      },
-      {
-        filekey: getCfBadgeKeys(stackName).namedStatus,
-        svg: getCfStatusBadge(
-          { status, updatedAt },
-          { label: `${stackName} Stack` }
-        ),
-      },
-      {
-        filekey: getCfBadgeKeys(stackName).statusDetailed,
-        svg: getCfStatusBadge({ status, updatedAt }, {}, true),
-      },
-      {
-        filekey: getCfBadgeKeys(stackName).namedStatusDetailed,
-        svg: getCfStatusBadge(
-          { status, updatedAt },
-          { label: `${stackName} Stack` },
-          true
-        ),
-      }
-    )
+    for (const style of LambdaEnvironment.BADGE_STYLES) {
+      badges.push(
+        {
+          filekey: getCfBadgeKeys(stackName, style).status,
+          svg: getCfStatusBadge({ status, updatedAt }, { style }),
+        },
+        {
+          filekey: getCfBadgeKeys(stackName, style).namedStatus,
+          svg: getCfStatusBadge(
+            { status, updatedAt },
+            { label: `${stackName} Stack`, style }
+          ),
+        },
+        {
+          filekey: getCfBadgeKeys(stackName, style).statusDetailed,
+          svg: getCfStatusBadge({ status, updatedAt }, { style }, true),
+        },
+        {
+          filekey: getCfBadgeKeys(stackName, style).namedStatusDetailed,
+          svg: getCfStatusBadge(
+            { status, updatedAt },
+            { label: `${stackName} Stack`, style },
+            true
+          ),
+        }
+      )
+    }
   }
 
   promises.push(

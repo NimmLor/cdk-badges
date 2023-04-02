@@ -69,8 +69,10 @@ export interface CdkBadgesProps {
 
   /**
    * The style of the badge to generate.
+   *
+   * @default ['flat-square', 'flat', 'for-the-badge', 'plastic']
    */
-  readonly badgeStyle?: BadgeStyle
+  readonly badgeStyles?: BadgeStyle[]
 
   /**
    * The cache control header to use when writing badges to S3.
@@ -97,7 +99,7 @@ export class CdkBadges extends Construct {
       additionalCfnStacks,
       cacheControl,
       localization,
-      badgeStyle,
+      badgeStyles,
       addPreviewWebapp,
     } = props
 
@@ -105,11 +107,19 @@ export class CdkBadges extends Construct {
       publicReadAccess: true,
     })
 
+    const badgeStylesString = badgeStyles?.join(';')
+    const defaultStyles = [
+      'flat-square',
+      'flat',
+      'for-the-badge',
+      'plastic',
+    ].join(';')
+
     this.lambdaHandler = new aws_lambda.Function(this, 'Handler', {
       code: aws_lambda.Code.fromAsset(path.join(__dirname, '../lib/lambda')),
       description: 'Generate status badges for cdk resources.',
       environment: {
-        BADGE_STYLE: badgeStyle ?? 'flat-square',
+        BADGE_STYLES: badgeStylesString ?? defaultStyles,
         BASE_URL: `https://${this.hostingBucket.bucketName}.s3.${
           Stack.of(this).region
         }.amazonaws.com`,

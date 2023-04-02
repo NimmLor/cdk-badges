@@ -20,7 +20,7 @@ Generate Badges for your cloudformation stacks.
 ```ts
 new CdkBadges(stack, 'Badges', {
   additionalCfnStacks: [],
-  badgeStyle: 'flat-square',
+  badgeStyles: ['flat-square'],
   cacheControl: 'max-age=300',
   localization: {
     hour12: false,

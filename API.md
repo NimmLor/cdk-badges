@@ -141,7 +141,7 @@ const cdkBadgesProps: CdkBadgesProps = { ... }
 | --- | --- | --- |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.additionalCfnStacks">additionalCfnStacks</a></code> | <code>string[]</code> | The arn of the stack that should be monitored for changes. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.addPreviewWebapp">addPreviewWebapp</a></code> | <code>boolean</code> | Whether to add a preview webapp to the stack. |
-| <code><a href="#cdk-badges.CdkBadgesProps.property.badgeStyle">badgeStyle</a></code> | <code>string</code> | The style of the badge to generate. |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.badgeStyles">badgeStyles</a></code> | <code>string[]</code> | The style of the badge to generate. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.cacheControl">cacheControl</a></code> | <code>string</code> | The cache control header to use when writing badges to S3. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.localization">localization</a></code> | <code><a href="#cdk-badges.LocalizationSettings">LocalizationSettings</a></code> | The formatting of the timestamps used in the badges. |
 
@@ -172,13 +172,14 @@ Whether to add a preview webapp to the stack.
 
 ---
 
-##### `badgeStyle`<sup>Optional</sup> <a name="badgeStyle" id="cdk-badges.CdkBadgesProps.property.badgeStyle"></a>
+##### `badgeStyles`<sup>Optional</sup> <a name="badgeStyles" id="cdk-badges.CdkBadgesProps.property.badgeStyles"></a>
 
 ```typescript
-public readonly badgeStyle: string;
+public readonly badgeStyles: string[];
 ```
 
-- *Type:* string
+- *Type:* string[]
+- *Default:* ['flat-square', 'flat', 'for-the-badge', 'plastic']
 
 The style of the badge to generate.
 
