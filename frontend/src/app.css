@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.link,
+button {
+  @apply text-link;
+}
+.link:hover,
+button:hover {
+  @apply underline underline-offset-1;
+}

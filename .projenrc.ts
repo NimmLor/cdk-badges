@@ -53,13 +53,16 @@ project.setScript(
   'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never'
 )
 
-const buildLambdaTask = project.preCompileTask
+const buildTask = project.preCompileTask
 
-buildLambdaTask.exec(
+buildTask.exec('cd frontend && yarn install && yarn build && cd ..')
+
+buildTask.exec(
   'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
 )
 
 project.tsconfigDev.addInclude('lambda/src/**/*.ts')
+project.tsconfigDev.addInclude('frontend/**/*.{ts,svelte}')
 
 new PrettierConfig(project)
 
@@ -67,16 +70,30 @@ new EslintConfig(project, {
   ignorePaths: ['lib/**/*'],
   projenFileRegex: '{src,test,lambda}/**/*.ts',
 })
+  .getFiles()
+  .eslintConfig.addOverride('overrides.1', {
+    extends: ['@atws/eslint-config'],
+    files: ['frontend/**/*.{ts,svelte}'],
+    parserOptions: {
+      project: 'frontend/tsconfig.json',
+    },
+  })
 
 new VscodeConfig(project, {
   vscodeExtensions: {
     addCdkExtensions: true,
     addCoreExtensions: true,
+    additionalExtensions: ['svelte.svelte-vscode'],
     addNodeExtensions: true,
   },
 })
 
-const ignorePatterns = ['.yarn/cache', '.yarn/install-state.gz']
+const ignorePatterns = [
+  'cache',
+  'install-state.gz',
+  '!frontend/tsconfig.json',
+  'frontend/dist',
+]
 
 new GitConfig(project)
 project.gitignore.addPatterns(...ignorePatterns)
@@ -97,7 +114,8 @@ project.npmignore?.addPatterns(
   'logo.png',
   'ui.png',
   'yarn-error.log',
-  'tsconfig.tsbuildinfo'
+  'tsconfig.tsbuildinfo',
+  'frontend'
 )
 
 project.synth()
