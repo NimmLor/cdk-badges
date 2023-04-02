@@ -116,14 +116,16 @@ project.npmignore?.addPatterns(
   '.yarn',
   '.yarnrc.yml',
   'lambda',
+  'frontend',
   '!lib/lambda',
+  '!lib/lambda/frontend/index.html',
   '!lib',
   'dist',
   'logo.png',
   'ui.png',
   'yarn-error.log',
   'tsconfig.tsbuildinfo',
-  'frontend'
+  'cdk.out'
 )
 
 project.synth()
