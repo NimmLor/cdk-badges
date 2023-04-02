@@ -24,6 +24,7 @@ cache
 install-state.gz
 !frontend/tsconfig.json
 frontend/dist
+.env.local
 .editorconfig
 .eslintignore
 .eslintrc

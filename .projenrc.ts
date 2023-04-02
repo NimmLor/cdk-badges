@@ -50,7 +50,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
 project.setScript('cdk', 'cdk')
 project.setScript(
   'e2e',
-  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never'
+  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never --outputs-file ./cdk.out/integ-outputs.json'
 )
 
 const buildTask = project.preCompileTask
@@ -59,6 +59,11 @@ buildTask.exec('cd frontend && yarn install && yarn build && cd ..')
 
 buildTask.exec(
   'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
+)
+
+// locate the output url and write it to .env.local
+buildTask.exec(
+  `node -e "const fs=require('fs');fs.writeFileSync('./frontend/.env.local','VITE_API_URL='+Object.entries(JSON.parse(fs.readFileSync('cdk.out/integ-outputs.json')).Test).find(([k])=>k.includes('BadgeUrl'))[1]);"`
 )
 
 project.tsconfigDev.addInclude('lambda/src/**/*.ts')
@@ -93,6 +98,7 @@ const ignorePatterns = [
   'install-state.gz',
   '!frontend/tsconfig.json',
   'frontend/dist',
+  '.env.local',
 ]
 
 new GitConfig(project)

@@ -1,14 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import Skeleton from './lib/Skeleton.svelte'
+  import Spinner from './lib/Spinner.svelte'
+  import BadgePreview from './lib/BadgePreview.svelte'
+  import type { Badge } from './types.js'
 
-  const url =
-    'https://nfedae3rdd7k2f34lgebnvenca0jisps.lambda-url.eu-central-1.on.aws/badges'
+  let baseUrl = import.meta.env['VITE_API_URL'] ?? window.location.origin
+  if (baseUrl.endsWith('/')) {
+    baseUrl = baseUrl.slice(0, -1)
+  }
+  const url = `${baseUrl}/badges`
 
   let response:
     | {
         baseUrl: string
         stackName: string
-        badges: Array<{ key: string; updatedAt: string; url: string }>
+        badges: Array<Badge>
       }
     | undefined = undefined
 
@@ -17,36 +24,29 @@
   })
 </script>
 
-<main class="max-w-4xl pt-6 pb-32 px-4 mx-auto">
+<main class="max-w-4xl px-4 pt-6 pb-32 mx-auto">
   <div class="max-w-3xl mx-auto">
     <div class="border border-gray-700 rounded-lg">
       <h2
-        class="w-full border-b border-gray-700 p-2 lg:p-4 font-semibold text-lg"
+        class="lg:p-4 w-full p-2 text-lg font-semibold border-b border-gray-700"
       >
-        {response?.stackName ?? ''}
+        {#if response}
+          <div class="h-5">
+            {response?.stackName ?? 'Failed to load'}
+          </div>
+        {:else}
+          <Skeleton class="w-32 h-5" />
+        {/if}
       </h2>
-      <div class="grid lg:grid-cols-2 gap-x-6 gap-y-4 p-4 lg:p-8">
+      <div class="lg:grid-cols-2 gap-x-6 gap-y-4 lg:p-8 grid p-4">
         {#if !response}
-          <p>Loading...</p>
+          <div>
+            <Spinner />
+          </div>
         {/if}
         {#if response}
           {#each response.badges as badge}
-            <div>
-              <img src={badge.url} alt={badge.key} class="block" />
-              <button
-                type="button"
-                class="py-1 mr-3 text-sm text-center text-sky-500 hover:text-sky-700 focus:outline-none"
-                on:click={() => navigator.clipboard.writeText(badge.url)}
-                >Copy URL</button
-              >
-              <button
-                type="button"
-                class="py-1 mr-3 text-sm text-center text-sky-500 hover:text-sky-700 focus:outline-none"
-                on:click={() =>
-                  navigator.clipboard.writeText(`![](${badge.url})`)}
-                >Copy Markdown</button
-              >
-            </div>
+            <BadgePreview {badge} />
           {/each}
         {/if}
       </div>
