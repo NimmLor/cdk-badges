@@ -6,6 +6,7 @@ import {
   DescribeStacksCommand,
 } from '@aws-sdk/client-cloudformation'
 import {
+  GetObjectTaggingCommand,
   ListObjectsCommand,
   PutObjectCommand,
   S3Client,
@@ -65,6 +66,13 @@ export const LambdaEnvironment = {
   TIMEZONE,
 }
 
+export type Badge = {
+  key: string
+  tags: Record<string, string>
+  updatedAt: string
+  url: string
+}
+
 /**
  * Get the settings for localization
  */
@@ -83,8 +91,12 @@ export const getLocalization = () => {
 export const writeBadgeToS3 = async ({
   filekey,
   svg,
+  label,
+  style,
 }: {
   filekey: string
+  label: string
+  style: Format['style'] & string
   svg: string
 }) => {
   console.log(`Creating badge: ${filekey}`)
@@ -98,7 +110,9 @@ export const writeBadgeToS3 = async ({
       Key: filekey,
       Tagging: new URLSearchParams({
         generatedAt: new Date().toISOString(),
+        label,
         source: 'cdk-badges',
+        style,
       }).toString(),
     })
   )
@@ -146,19 +160,41 @@ export const getCfStackResources = async (stackName: string) => {
 /**
  * List all badges in S3
  */
-export const listS3Badges = async (prefix?: string) => {
+export const listS3Badges = async (
+  prefix?: string
+): Promise<Array<Omit<Badge, 'tags'>>> => {
   const items = await s3.send(
     new ListObjectsCommand({ Bucket: BUCKET_NAME, Prefix: prefix })
   )
 
   const badges =
     items.Contents?.map((item) => ({
-      key: item.Key,
-      updatedAt: item.LastModified,
+      key: item.Key as string,
+      updatedAt: item.LastModified
+        ? new Date(item.LastModified).toISOString()
+        : new Date().toISOString(),
       url: `${BASE_URL}/${item.Key}`,
     })) ?? []
 
   return badges
+}
+
+export const resolveS3ObjectTags = async (
+  badge: Omit<Badge, 'tags'>
+): Promise<Badge> => {
+  const response = await s3.send(
+    new GetObjectTaggingCommand({ Bucket: BUCKET_NAME, Key: badge.key })
+  )
+
+  return {
+    ...badge,
+    tags:
+      response.TagSet?.reduce((accumulator, tag) => {
+        if (tag.Key !== undefined && tag.Value !== undefined)
+          accumulator[tag.Key] = tag.Value
+        return accumulator
+      }, {}) ?? {},
+  }
 }
 
 /**

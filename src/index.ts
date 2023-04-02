@@ -158,6 +158,7 @@ export class CdkBadges extends Construct {
           's3:PutObjectAcl',
           's3:PutObjectTagging',
           's3:ListBucket',
+          's3:GetObjectTagging',
         ],
         resources: [
           this.hostingBucket.bucketArn,

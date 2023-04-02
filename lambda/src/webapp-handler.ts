@@ -1,4 +1,4 @@
-import { LambdaEnvironment, listS3Badges } from './utils'
+import { LambdaEnvironment, listS3Badges, resolveS3ObjectTags } from './utils'
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 import type { Request, Response } from 'lambda-api'
 import createApi from 'lambda-api'
@@ -20,9 +20,13 @@ export const functionUrlHandler: APIGatewayProxyHandlerV2<unknown> = async (
   api.get('/badges', async (_request, response) => {
     const [s3Badges] = await Promise.all([listS3Badges()])
 
-    response
-      .status(200)
-      .json({ badges: s3Badges, baseUrl: BASE_URL, stackName: STACK_NAME })
+    const resolvedBadges = await Promise.all(s3Badges.map(resolveS3ObjectTags))
+
+    response.status(200).json({
+      badges: resolvedBadges,
+      baseUrl: BASE_URL,
+      stackName: STACK_NAME,
+    })
   })
 
   api.get('*', async (_request, response) => {
