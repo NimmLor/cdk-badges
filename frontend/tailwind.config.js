@@ -8,6 +8,7 @@ export default {
         content: '#c9d1d9',
         link: '#58a6ff',
         primary: '#0d1117',
+        secondary: '#30363d',
       },
     },
   },
