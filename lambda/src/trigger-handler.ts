@@ -21,7 +21,7 @@ export const updateStackResourceCountBadge = async () => {
         filekey: getCfBadgeKeys(STACK_NAME, style).resourceCount,
         label: `${STACK_NAME} Generic Stack Resource Count`,
         style,
-        svg: getCfResourceCountBadge(resources.length, {}),
+        svg: getCfResourceCountBadge(resources.length, { style }),
       },
       {
         filekey: getCfBadgeKeys(STACK_NAME, style).namedResourceCount,
@@ -29,6 +29,7 @@ export const updateStackResourceCountBadge = async () => {
         style,
         svg: getCfResourceCountBadge(resources.length, {
           label: `${STACK_NAME} Stack`,
+          style,
         }),
       }
     )
