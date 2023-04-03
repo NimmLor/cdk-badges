@@ -254,6 +254,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tabler/icons-svelte@npm:^2.13.1":
+  version: 2.13.1
+  resolution: "@tabler/icons-svelte@npm:2.13.1"
+  dependencies:
+    "@tabler/icons": 2.13.1
+  peerDependencies:
+    svelte: ^3.49.0
+  checksum: b23c37458fd1386c2bf6dfb2c4a53f4d1bdab8a5d6a9de12c0dfaee8977eca4dbc670a9617f8051f4fdcb52d0ed0af0cc9ffcaa6d42044b3905522d1a3835940
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:2.13.1":
+  version: 2.13.1
+  resolution: "@tabler/icons@npm:2.13.1"
+  checksum: e0da07d43db11dea773b3921a0cb2e18f4abb724da80f30b9696c6f3db7e1cc5bcd59dafd5765bd9f059cd2900d40c5df420c0a31d9bd5c55ec2147642e4c823
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -2038,6 +2056,7 @@ __metadata:
   resolution: "svelte-ssr@workspace:."
   dependencies:
     "@sveltejs/vite-plugin-svelte": ^2.0.3
+    "@tabler/icons-svelte": ^2.13.1
     "@tsconfig/svelte": ^3.0.0
     autoprefixer: ^10.4.14
     postcss: ^8.4.21

@@ -28,25 +28,23 @@
   })
 </script>
 
-<div class="">
-  <div class="border-secondary lg:px-8 px-4 py-4 border-b">
-    <div class="text-base font-medium">Filter by style:</div>
-    <div class="wrap flex space-x-3">
-      {#each Object.entries(chipFilter) as styleFilter}
-        <div class="mt-2">
-          <ChipToggle
-            isActive={styleFilter[1]}
-            label={styleFilter[0]}
-            onToggle={() =>
-              (chipFilter[styleFilter[0]] = !chipFilter[styleFilter[0]])}
-          />
-        </div>
-      {/each}
-      {#if isLoading}
-        <Skeleton class="h-7 !rounded-full w-24 mt-2" />
-        <Skeleton class="h-7 !rounded-full w-28 mt-2" />
-        <Skeleton class="h-7 !rounded-full w-20 mt-2" />
-      {/if}
-    </div>
+<div>
+  <div class="text-base font-medium">Filter by style:</div>
+  <div class="wrap flex space-x-3">
+    {#each Object.entries(chipFilter) as styleFilter}
+      <div class="mt-2">
+        <ChipToggle
+          isActive={styleFilter[1]}
+          label={styleFilter[0]}
+          onToggle={() =>
+            (chipFilter[styleFilter[0]] = !chipFilter[styleFilter[0]])}
+        />
+      </div>
+    {/each}
+    {#if isLoading}
+      <Skeleton class="h-7 !rounded-full w-24 mt-2" />
+      <Skeleton class="h-7 !rounded-full w-28 mt-2" />
+      <Skeleton class="h-7 !rounded-full w-20 mt-2" />
+    {/if}
   </div>
 </div>
