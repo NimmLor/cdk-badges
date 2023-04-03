@@ -5,6 +5,7 @@
   import BadgePreview from './lib/BadgePreview.svelte'
   import type { Badge } from './types.js'
   import Filter from './lib/Filter.svelte'
+  import BadgeCategory from './lib/BadgeCategory.svelte'
 
   let baseUrl = import.meta.env['VITE_API_URL'] ?? window.location.origin
   if (baseUrl.endsWith('/')) {
@@ -25,6 +26,24 @@
   })
 
   let badges: Array<{ badge: Badge; isVisible }> = []
+
+  $: badgesByStyle = badges.reduce((acc, badge) => {
+    if (!acc[badge.badge.tags['style']]) {
+      acc[badge.badge.tags['style']] = []
+    }
+    acc[badge.badge.tags['style']].push(badge)
+    return acc
+  }, {} as Record<string, Array<{ badge: Badge; isVisible }>>)
+
+  $: badgesByLabel = badges.reduce((acc, badge) => {
+    if (!acc[badge.badge.tags['label']]) {
+      acc[badge.badge.tags['label']] = []
+    }
+    acc[badge.badge.tags['label']].push(badge)
+    return acc
+  }, {} as Record<string, Array<{ badge: Badge; isVisible }>>)
+
+  let displayStyle: 'grid' | 'byStyle' | 'byLabel' = 'byStyle'
 </script>
 
 <main class="max-w-4xl px-4 pt-6 pb-32 mx-auto">
@@ -34,25 +53,34 @@
         class="lg:p-4 border-secondary w-full p-2 text-lg font-semibold border-b"
       >
         {#if response}
-          <div class="h-5">
-            {response?.stackName ?? 'Failed to load'}
+          <div class="h-5 leading-5">
+            {response.stackName}
           </div>
         {:else}
           <Skeleton class="w-32 h-5" />
         {/if}
       </h2>
-      <Filter bind:filteredBadges={badges} allBadges={response?.badges} />
-      <div
-        class="lg:grid-cols-2 gap-x-6 gap-y-4 lg:p-8 grid p-4 transition-all duration-500 min-h-[30rem]"
-      >
+      <Filter
+        bind:filteredBadges={badges}
+        allBadges={response?.badges}
+        isLoading={!response}
+      />
+      <div class="lg:px-8 px-4 pb-8">
         {#if !response}
-          <div>
+          <div class="mb-44 mt-8">
             <Spinner />
           </div>
-        {/if}
-        {#if response}
-          {#each badges as badge}
-            <BadgePreview badge={badge.badge} isVisible={badge.isVisible} />
+        {:else if displayStyle === 'grid'}
+          <div
+            class="lg:grid-cols-2 gap-x-6 gap-y-4 grid transition-all duration-500"
+          >
+            {#each badges as badge}
+              <BadgePreview badge={badge.badge} isVisible={badge.isVisible} />
+            {/each}
+          </div>
+        {:else if displayStyle === 'byStyle'}
+          {#each Object.entries(badgesByStyle) as style}
+            <BadgeCategory label={style[0]} badges={style[1]} />
           {/each}
         {/if}
       </div>

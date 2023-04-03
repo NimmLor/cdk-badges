@@ -1,11 +1,14 @@
 <script lang="ts">
   import type { Badge } from '../types.js'
   import ChipToggle from './ChipToggle.svelte'
+  import Skeleton from './Skeleton.svelte'
 
   let availableStyles: Array<string> = []
   let chipFilter: Record<string, boolean> = {}
 
   export let allBadges: Array<Badge> = []
+
+  export let isLoading = false
 
   $: availableStyles = allBadges
     ? [...new Set(allBadges.map((b) => b.tags['style']))]
@@ -39,6 +42,11 @@
           />
         </div>
       {/each}
+      {#if isLoading}
+        <Skeleton class="h-7 !rounded-full w-24 mt-2" />
+        <Skeleton class="h-7 !rounded-full w-28 mt-2" />
+        <Skeleton class="h-7 !rounded-full w-20 mt-2" />
+      {/if}
     </div>
   </div>
 </div>

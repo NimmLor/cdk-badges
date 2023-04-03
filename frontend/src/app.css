@@ -8,3 +8,31 @@
 .link:hover {
   @apply underline underline-offset-1;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+::-webkit-scrollbar-track {
+  background: #424242;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #686868;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7b7b7b;
+}
+
+/* Buttons */
+::-webkit-scrollbar-button:single-button {
+  background-color: #424242;
+  display: block;
+  height: 13px;
+  width: 16px;
+}

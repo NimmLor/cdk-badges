@@ -6,7 +6,7 @@
 
 <div>
   <button
-    class="rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ring-1 ring-inset flex items-center transition-all duration-100 select-none"
+    class="rounded-full px-2.5 h-7 py-1 text-xs font-semibold shadow-sm ring-1 ring-inset flex items-center transition-all duration-100 select-none"
     on:click={onToggle}
     aria-pressed={isActive}
   >
