@@ -1,5 +1,5 @@
 import { getCfResourceCountBadge } from './cf-badges'
-import { getCfBadgeKeys } from './filenames'
+import { getBadgeKeys } from './filenames'
 import { getCfStackResources, LambdaEnvironment, writeBadgeToS3 } from './utils'
 import type { Format } from 'badge-maker'
 
@@ -18,13 +18,13 @@ export const updateStackResourceCountBadge = async () => {
   for (const style of BADGE_STYLES) {
     badges.push(
       {
-        filekey: getCfBadgeKeys(STACK_NAME, style).resourceCount,
+        filekey: getBadgeKeys(STACK_NAME, style).cf.resourceCount,
         label: `${STACK_NAME} Generic Stack Resource Count`,
         style,
         svg: getCfResourceCountBadge(resources.length, { style }),
       },
       {
-        filekey: getCfBadgeKeys(STACK_NAME, style).namedResourceCount,
+        filekey: getBadgeKeys(STACK_NAME, style).cf.namedResourceCount,
         label: `${STACK_NAME} Stack Resource Count`,
         style,
         svg: getCfResourceCountBadge(resources.length, {

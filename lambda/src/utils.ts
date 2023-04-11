@@ -13,6 +13,12 @@ import {
 } from '@aws-sdk/client-s3'
 import type { Format } from 'badge-maker'
 
+export type BadgeProps = {
+  color?: string
+  label?: string
+  style?: Format['style']
+}
+
 export type StackInfo = Partial<{
   createdAt: Stack['CreationTime']
   driftInfo: Stack['DriftInformation']

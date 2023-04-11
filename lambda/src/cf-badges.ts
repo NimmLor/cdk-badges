@@ -1,15 +1,8 @@
 import { Colors, StatusColors } from './colors'
-import type { StackInfo } from './utils'
+import type { BadgeProps, StackInfo } from './utils'
 import { formatDateTime } from './utils'
 import type { StackStatus } from '@aws-sdk/client-cloudformation'
-import type { Format } from 'badge-maker'
 import { makeBadge } from 'badge-maker'
-
-type BadgeProps = {
-  color?: string
-  label?: string
-  style?: Format['style']
-}
 
 export const CfStatusMappings = {
   CREATE_COMPLETE: {

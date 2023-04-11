@@ -1,12 +1,14 @@
 /* eslint-disable no-console */
 
 import { getCfStatusBadge } from './cf-badges'
-import { getCfBadgeKeys } from './filenames'
+import { getCodePipelineStatusBadge } from './codepipeline-badges'
+import { getBadgeKeys } from './filenames'
 import { updateStackResourceCountBadge } from './trigger-handler'
 import { LambdaEnvironment, writeBadgeToS3 } from './utils'
 import type { StackStatus } from '@aws-sdk/client-cloudformation'
 import type { EventBridgeEvent, EventBridgeHandler } from 'aws-lambda'
 import type { Format } from 'badge-maker'
+import { promises } from 'dns'
 
 type UnknownEvent = EventBridgeEvent<string, unknown>
 
@@ -22,6 +24,33 @@ const isCfStackEvent = (
     }
   }
 > => event['detail-type'] === 'CloudFormation Stack Status Change'
+
+const isCodePipelineStatusEvent = (
+  event: UnknownEvent
+): event is EventBridgeEvent<
+  'CodePipeline Pipeline Execution State Change',
+  {
+    'execution-id': string
+    pipeline: string
+    state: 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
+    version: number | string
+  }
+> => event['detail-type'] === 'CodePipeline Pipeline Execution State Change'
+
+// const isCodePipelineStageEvent = (
+//   event: UnknownEvent
+// ): event is EventBridgeEvent<
+//   'CodePipeline Pipeline Execution State Change',
+//   {
+//     detail: {
+//       'execution-id': string
+//       pipeline: string
+//       stage: string
+//       state: 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
+//       version: 1
+//     }
+//   }
+// > => event['detail-type'] === 'CodePipeline Pipeline Execution State Change'
 
 export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
   event
@@ -48,13 +77,13 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
     for (const style of LambdaEnvironment.BADGE_STYLES) {
       badges.push(
         {
-          filekey: getCfBadgeKeys(stackName, style).status,
+          filekey: getBadgeKeys(stackName, style).cf.status,
           label: `${stackName} Generic Stack Status`,
           style,
           svg: getCfStatusBadge({ status, updatedAt }, { style }),
         },
         {
-          filekey: getCfBadgeKeys(stackName, style).namedStatus,
+          filekey: getBadgeKeys(stackName, style).cf.namedStatus,
           label: `${stackName} Stack Status`,
           style,
           svg: getCfStatusBadge(
@@ -63,13 +92,13 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           ),
         },
         {
-          filekey: getCfBadgeKeys(stackName, style).statusDetailed,
+          filekey: getBadgeKeys(stackName, style).cf.statusDetailed,
           label: `${stackName} Detailed Generic Stack Status`,
           style,
           svg: getCfStatusBadge({ status, updatedAt }, { style }, true),
         },
         {
-          filekey: getCfBadgeKeys(stackName, style).namedStatusDetailed,
+          filekey: getBadgeKeys(stackName, style).cf.namedStatusDetailed,
           label: `${stackName} Detailed Stack Status`,
           style,
           svg: getCfStatusBadge(
@@ -77,6 +106,25 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
             { label: `${stackName} Stack`, style },
             true
           ),
+        }
+      )
+    }
+  } else if (isCodePipelineStatusEvent(event)) {
+    const { state, pipeline } = event.detail
+    console.log('CodePipeline event:', event.detail)
+    for (const style of LambdaEnvironment.BADGE_STYLES) {
+      badges.push(
+        {
+          filekey: getBadgeKeys(pipeline, style).cf.status,
+          label: `${pipeline} Status`,
+          style,
+          svg: getCodePipelineStatusBadge({ state }, { style }, true),
+        },
+        {
+          filekey: getBadgeKeys(pipeline, style).cf.status,
+          label: `${pipeline} Generic Status`,
+          style,
+          svg: getCodePipelineStatusBadge({ state }, { style }),
         }
       )
     }
