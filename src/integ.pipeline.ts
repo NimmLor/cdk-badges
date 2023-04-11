@@ -28,7 +28,7 @@ export class PipelineStack extends Stack {
         }),
       },
       pipelineName: 'cdk-badges-Pipeline',
-      selfMutation: false,
+      selfMutation: true,
       synth: new pipelines.ShellStep('Synth', {
         commands: ['yarn', 'yarn run e2e:synth'],
         input: pipelines.CodePipelineSource.connection(
@@ -39,6 +39,7 @@ export class PipelineStack extends Stack {
               'arn:aws:codestar-connections:eu-central-1:961435721735:connection/430aee0e-89a8-4a88-b98f-cacbe9c7cc19',
           }
         ),
+        primaryOutputDirectory: `cdk.out`,
       }),
     })
 
