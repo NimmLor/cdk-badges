@@ -66,7 +66,7 @@ project.setScript(
 
 project.setScript(
   'ci:synth',
-  'yarn cdk synth --app "ts-node ./src/integ.pipeline.ts" --require-approval never'
+  'yarn run build && yarn cdk synth --app "ts-node ./src/integ.pipeline.ts" --require-approval never'
 )
 project.setScript(
   'deploy:pipeline',
