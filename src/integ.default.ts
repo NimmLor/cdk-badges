@@ -4,8 +4,8 @@ import type { Construct } from 'constructs'
 
 const app = new App()
 
-export const getTestStack = (scope: App | Construct) => {
-  const stack = new Stack(scope, 'cdk-badges-Test')
+export const getTestStack = (scope: App | Construct, stackName: string) => {
+  const stack = new Stack(scope, stackName)
 
   new CdkBadges(stack, 'Badges', {
     additionalCfnStacks: [
@@ -23,4 +23,4 @@ export const getTestStack = (scope: App | Construct) => {
   })
 }
 
-getTestStack(app)
+getTestStack(app, 'cdk-badges-Test')

@@ -7,7 +7,7 @@ export class TestStage extends Stage {
   public constructor(scope: Construct, id: string, props?: StageProps) {
     super(scope, id, props)
 
-    getTestStack(this)
+    getTestStack(this, 'Test')
   }
 }
 
@@ -42,7 +42,7 @@ export class PipelineStack extends Stack {
       }),
     })
 
-    pipeline.addStage(new TestStage(this, 'Test'))
+    pipeline.addStage(new TestStage(this, 'cdk-badges'))
   }
 }
 
