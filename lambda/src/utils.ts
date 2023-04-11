@@ -37,6 +37,7 @@ const {
   BUCKET_NAME,
   SHOW_SECONDS,
   BADGE_STYLES,
+  TIMEZONE_DISPLAY_FORMAT,
 } = process.env
 
 if (
@@ -48,7 +49,8 @@ if (
   STACK_NAME === undefined ||
   BUCKET_NAME === undefined ||
   SHOW_SECONDS === undefined ||
-  BADGE_STYLES === undefined
+  BADGE_STYLES === undefined ||
+  TIMEZONE_DISPLAY_FORMAT === undefined
 ) {
   throw new Error('Missing required environment variables')
 }
@@ -82,6 +84,10 @@ export const getLocalization = () => {
     locale: LOCALE,
     showSeconds: SHOW_SECONDS === 'true',
     timezone: TIMEZONE,
+    timeZoneName:
+      TIMEZONE_DISPLAY_FORMAT === 'none'
+        ? undefined
+        : (TIMEZONE_DISPLAY_FORMAT as Intl.DateTimeFormatOptions['timeZoneName']),
   }
 }
 
@@ -203,7 +209,8 @@ export const resolveS3ObjectTags = async (
 export const formatDateTime = (
   timestamp: Date | number | string | undefined
 ) => {
-  const { hour12, locale, showSeconds, timezone } = getLocalization()
+  const { hour12, locale, showSeconds, timezone, timeZoneName } =
+    getLocalization()
 
   if (timestamp === undefined) return 'unknown'
 
@@ -214,7 +221,7 @@ export const formatDateTime = (
     minute: '2-digit',
     month: '2-digit',
     timeZone: timezone,
-    timeZoneName: 'shortOffset',
+    timeZoneName,
     year: '2-digit',
     ...(showSeconds ? { second: '2-digit' } : {}),
   })

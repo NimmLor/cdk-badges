@@ -41,6 +41,23 @@ export interface LocalizationSettings {
    * @default 'UTC'
    */
   readonly timezone?: string
+
+  /**
+   * The format of the timezone to display.
+   *
+   * Sets the timeZoneName option of the Intl.DateTimeFormat constructor.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#parameters
+   * @default 'none'
+   */
+  readonly timezoneDisplayFormat?:
+    | 'long'
+    | 'longGeneric'
+    | 'longOffset'
+    | 'none'
+    | 'short'
+    | 'shortGeneric'
+    | 'shortOffset'
 }
 
 /**
@@ -130,6 +147,7 @@ export class CdkBadges extends Construct {
         SHOW_SECONDS: localization?.showSeconds?.toString() ?? 'false',
         STACK_NAME: Stack.of(this).stackName,
         TIMEZONE: localization?.timezone ?? 'UTC',
+        TIMEZONE_DISPLAY_FORMAT: localization?.timezoneDisplayFormat ?? 'none',
       },
       // functionName: `${Stack.of(this).stackName}-CdkBadges`,
       handler: 'index.handler',
