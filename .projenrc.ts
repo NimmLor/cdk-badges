@@ -65,7 +65,7 @@ buildTask.exec(
 
 // locate the output url and write it to .env.local
 buildTask.exec(
-  `node -e "const fs=require('fs');fs.writeFileSync('./frontend/.env.local','VITE_API_URL='+Object.entries(JSON.parse(fs.readFileSync('cdk.out/integ-outputs.json')).Test).find(([k])=>k.includes('BadgeUrl'))[1]);"`
+  `node -e "const fs=require('fs');try{fs.writeFileSync('./frontend/.env.local','VITE_API_URL='+Object.entries(JSON.parse(fs.readFileSync('cdk.out/integ-outputs.json')).Test).find(([k])=>k.includes('BadgeUrl'))[1])}catch{};"`
 )
 
 project.tsconfigDev.addInclude('lambda/src/**/*.ts')
