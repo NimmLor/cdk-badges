@@ -53,6 +53,21 @@ project.setScript(
   'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never --outputs-file ./cdk.out/integ-outputs.json'
 )
 
+project.setScript(
+  'e2e:synth',
+  'yarn build && yarn cdk synth --app "./lib/integ.default.js"'
+)
+
+project.setScript(
+  'deploy:lambda',
+  'yarn cdk deploy --app "ts-node ./src/integ.default.ts" --require-approval never --hotswap --outputs-file ./cdk.out/integ-outputs.json'
+)
+
+project.setScript(
+  'deploy:pipeline',
+  'yarn cdk deploy --app "ts-node ./src/integ.pipeline.ts" --require-approval never'
+)
+
 const buildTask = project.preCompileTask
 
 buildTask.exec(
