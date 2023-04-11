@@ -1,6 +1,6 @@
 import { getTestStack } from './integ.default'
 import type { StackProps, StageProps } from 'aws-cdk-lib'
-import { App, pipelines, Stack, Stage } from 'aws-cdk-lib'
+import { App, aws_codebuild, pipelines, Stack, Stage } from 'aws-cdk-lib'
 import type { Construct } from 'constructs'
 
 export class TestStage extends Stage {
@@ -16,6 +16,17 @@ export class PipelineStack extends Stack {
     super(scope, id, props)
 
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
+      codeBuildDefaults: {
+        buildEnvironment: {
+          // see https://docs.aws.amazon.com/codebuild/latest/userguide/available-runtimes.html
+          buildImage: aws_codebuild.LinuxBuildImage.fromCodeBuildImageId(
+            'aws/codebuild/standard:6.0'
+          ),
+        },
+        partialBuildSpec: aws_codebuild.BuildSpec.fromObject({
+          phases: { install: { 'runtime-versions': { nodejs: 16 } } },
+        }),
+      },
       pipelineName: 'cdk-badges-Pipeline',
       selfMutation: false,
       synth: new pipelines.ShellStep('Synth', {
