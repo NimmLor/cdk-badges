@@ -36,20 +36,20 @@ const isCodePipelineStatusEvent = (
   }
 > => event['detail-type'] === 'CodePipeline Pipeline Execution State Change'
 
-// const isCodePipelineStageEvent = (
-//   event: UnknownEvent
-// ): event is EventBridgeEvent<
-//   'CodePipeline Pipeline Execution State Change',
-//   {
-//     detail: {
-//       'execution-id': string
-//       pipeline: string
-//       stage: string
-//       state: 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
-//       version: 1
-//     }
-//   }
-// > => event['detail-type'] === 'CodePipeline Pipeline Execution State Change'
+const isCodePipelineStageEvent = (
+  event: UnknownEvent
+): event is EventBridgeEvent<
+  'CodePipeline Stage Execution State Change',
+  {
+    detail: {
+      'execution-id': string
+      pipeline: string
+      stage: string
+      state: 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
+      version: 1
+    }
+  }
+> => event['detail-type'] === 'CodePipeline Stage Execution State Change'
 
 export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
   event
@@ -116,7 +116,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .pipelineStateDetailed,
-          label: `${pipeline} Status`,
+          label: `${pipeline} Generic Detailed Status`,
           style,
           svg: getCodePipelineStatusBadge({ state }, { style }, true),
         },
@@ -125,6 +125,66 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           label: `${pipeline} Generic Status`,
           style,
           svg: getCodePipelineStatusBadge({ state }, { style }),
+        },
+        {
+          filekey: getBadgeKeys(pipeline, style).codepipeline
+            .pipelineStateNamedDetailed,
+          label: `${pipeline} Detailed Status`,
+          style,
+          svg: getCodePipelineStatusBadge(
+            { state },
+            { label: `${pipeline}`, style },
+            true
+          ),
+        },
+        {
+          filekey: getBadgeKeys(pipeline, style).codepipeline
+            .pipelineStateNamed,
+          label: `${pipeline} Status`,
+          style,
+          svg: getCodePipelineStatusBadge(
+            { state },
+            { label: `${pipeline}`, style }
+          ),
+        }
+      )
+    }
+  } else if (isCodePipelineStageEvent(event)) {
+    const { state, pipeline, stage } = event.detail.detail
+    for (const style of LambdaEnvironment.BADGE_STYLES) {
+      badges.push(
+        {
+          filekey: getBadgeKeys(pipeline, style).codepipeline
+            .stageStateDetailed,
+          label: `${stage}, Stage Generic Detailed Status`,
+          style,
+          svg: getCodePipelineStatusBadge({ stage, state }, { style }, true),
+        },
+        {
+          filekey: getBadgeKeys(pipeline, style).codepipeline.stageState,
+          label: `${stage}, Stage Generic Status`,
+          style,
+          svg: getCodePipelineStatusBadge({ stage, state }, { style }),
+        },
+        {
+          filekey: getBadgeKeys(pipeline, style).codepipeline
+            .stageStateNamedDetailed,
+          label: `${stage}, Stage Detailed Status`,
+          style,
+          svg: getCodePipelineStatusBadge(
+            { stage, state },
+            { label: `${stage}`, style },
+            true
+          ),
+        },
+        {
+          filekey: getBadgeKeys(pipeline, style).codepipeline.stageStateNamed,
+          label: `${stage}, Stage Status`,
+          style,
+          svg: getCodePipelineStatusBadge(
+            { stage, state },
+            { label: `${stage}`, style }
+          ),
         }
       )
     }

@@ -27,6 +27,7 @@ const mapCodePipelineStateToReadable = (
 
 export const getCodePipelineStatusBadge = (
   info: {
+    stage?: string
     state: CodePipelineState
     timestamp?: string
   },
@@ -39,7 +40,7 @@ export const getCodePipelineStatusBadge = (
 
   return makeBadge({
     color,
-    label: props?.label ?? 'CloudFormation',
+    label: props?.label ?? info.stage ?? 'Pipeline',
     message:
       includeTimestamp === true
         ? `${message} at ${formatDateTime(timestamp)}`

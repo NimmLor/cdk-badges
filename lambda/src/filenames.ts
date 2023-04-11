@@ -10,5 +10,11 @@ export const getBadgeKeys = (resourceName: string, style: string) => ({
   codepipeline: {
     pipelineState: `codepipeline/${resourceName}/state/${style}.svg`,
     pipelineStateDetailed: `codepipeline/${resourceName}/state-detailed/${style}.svg`,
+    pipelineStateNamed: `codepipeline/${resourceName}/state-named/${style}.svg`,
+    pipelineStateNamedDetailed: `codepipeline/${resourceName}/state-named-detailed/${style}.svg`,
+    stageState: `codepipeline/${resourceName}/stage-state/${style}.svg`,
+    stageStateDetailed: `codepipeline/${resourceName}/stage-state-detailed/${style}.svg`,
+    stageStateNamed: `codepipeline/${resourceName}/stage-state-named/${style}.svg`,
+    stageStateNamedDetailed: `codepipeline/${resourceName}/stage-state-named-detailed/${style}.svg`,
   },
 })
