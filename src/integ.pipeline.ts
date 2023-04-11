@@ -28,7 +28,6 @@ export class PipelineStack extends Stack {
         }),
       },
       pipelineName: 'cdk-badges-Pipeline',
-      selfMutation: true,
       synth: new pipelines.ShellStep('Synth', {
         commands: ['yarn', 'yarn run e2e:synth'],
         input: pipelines.CodePipelineSource.connection(
@@ -48,4 +47,4 @@ export class PipelineStack extends Stack {
 }
 
 const app = new App()
-new PipelineStack(app, 'PipelineStack', {})
+new PipelineStack(app, 'cdk-badges-PipelineStack', {})
