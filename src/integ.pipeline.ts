@@ -29,7 +29,7 @@ export class PipelineStack extends Stack {
       },
       pipelineName: 'cdk-badges-Pipeline',
       synth: new pipelines.ShellStep('Synth', {
-        commands: ['yarn', 'yarn run e2e:synth'],
+        commands: ['yarn', 'yarn run ci:synth'],
         input: pipelines.CodePipelineSource.connection(
           'NimmLor/cdk-badges',
           'codepipeline-support',
