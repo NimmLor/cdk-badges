@@ -17,7 +17,7 @@
       }`}
       stroke={2.5}
     />
-    <span class="text-md tracking-wide">
+    <span class="text-md tracking-wide whitespace-nowrap">
       {label}
     </span>
   </button>

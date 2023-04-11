@@ -29,8 +29,10 @@ export const functionUrlHandler: APIGatewayProxyHandlerV2<unknown> = async (
     })
   })
 
-  api.get('*', async (_request, response) => {
-    response.download('./frontend/index.html', undefined, {
+  api.get('*', async (request, response) => {
+    const filePath = request.path === '/' ? '/index.html' : request.path
+
+    response.download(`./frontend/${filePath}`, undefined, {
       headers: {
         'content-disposition': 'inline',
       },

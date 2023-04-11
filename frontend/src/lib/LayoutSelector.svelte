@@ -1,7 +1,10 @@
 <script lang="ts">
   import { IconList } from '@tabler/icons-svelte'
-  export let value: 'grid' | 'byStyle' | 'byLabel' = 'grid'
-  export let onChange = (value: string) => {}
+
+  type DisplayMode = 'grid' | 'byStyle' | 'byLabel'
+
+  export let value: DisplayMode = 'grid'
+  export let onChange = (value: DisplayMode) => value
 </script>
 
 <div class="mt-auto">
@@ -34,7 +37,7 @@
 
 <style lang="postcss">
   button {
-    @apply inline-flex items-center px-3 py-2 text-center text-xs font-medium transition-colors duration-200;
+    @apply inline-flex items-center px-3 py-2 text-center text-xs font-medium transition-colors duration-200 whitespace-nowrap;
   }
 
   button[aria-pressed='true'] {

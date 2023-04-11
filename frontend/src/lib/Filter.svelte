@@ -30,14 +30,20 @@
 
 <div>
   <div class="text-base font-medium">Filter by style:</div>
-  <div class="wrap flex space-x-3">
+  <div class="flex-wrap flex">
     {#each Object.entries(chipFilter) as styleFilter}
-      <div class="mt-2">
+      <div class="mt-2 mr-3">
         <ChipToggle
           isActive={styleFilter[1]}
           label={styleFilter[0]}
-          onToggle={() =>
-            (chipFilter[styleFilter[0]] = !chipFilter[styleFilter[0]])}
+          onToggle={() => {
+            chipFilter[styleFilter[0]] = !chipFilter[styleFilter[0]]
+            if (Object.values(chipFilter).every((v) => !v)) {
+              Object.keys(chipFilter).forEach((style) => {
+                chipFilter[style] = true
+              })
+            }
+          }}
         />
       </div>
     {/each}

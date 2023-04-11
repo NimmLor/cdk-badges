@@ -26,23 +26,23 @@
     response = await fetch(url).then((r) => r.json())
   })
 
-  let badges: Array<{ badge: Badge; isVisible }> = []
+  let badges: Array<{ badge: Badge; isVisible: boolean }> = []
 
   $: badgesByStyle = badges.reduce((acc, badge) => {
     if (!acc[badge.badge.tags['style']]) {
       acc[badge.badge.tags['style']] = []
     }
-    acc[badge.badge.tags['style']].push(badge)
+    acc[badge.badge.tags['style']]?.push(badge)
     return acc
-  }, {} as Record<string, Array<{ badge: Badge; isVisible }>>)
+  }, {} as Record<string, Array<{ badge: Badge; isVisible: boolean }>>)
 
   $: badgesByLabel = badges.reduce((acc, badge) => {
     if (!acc[badge.badge.tags['label']]) {
       acc[badge.badge.tags['label']] = []
     }
-    acc[badge.badge.tags['label']].push(badge)
+    acc[badge.badge.tags['label']]?.push(badge)
     return acc
-  }, {} as Record<string, Array<{ badge: Badge; isVisible }>>)
+  }, {} as Record<string, Array<{ badge: Badge; isVisible: boolean }>>)
 
   let displayStyle: 'grid' | 'byStyle' | 'byLabel' = 'byLabel'
 </script>
@@ -63,17 +63,21 @@
       </h2>
       <div>
         <div
-          class="border-secondary lg:px-8 flex justify-between px-4 py-4 border-b"
+          class="grid grid-cols-5 lg:px-8 px-4 py-4 border-b border-secondary"
         >
-          <Filter
-            bind:filteredBadges={badges}
-            allBadges={response?.badges}
-            isLoading={!response}
-          />
-          <LayoutSelector
-            value={displayStyle}
-            onChange={(value) => (displayStyle = value)}
-          />
+          <div class="col-span-3">
+            <Filter
+              bind:filteredBadges={badges}
+              allBadges={response?.badges ?? []}
+              isLoading={!response}
+            />
+          </div>
+          <div class="col-span-2 mt-auto ml-auto">
+            <LayoutSelector
+              value={displayStyle}
+              onChange={(value) => (displayStyle = value)}
+            />
+          </div>
         </div>
       </div>
       <div class="lg:px-8 px-4 pb-8">
