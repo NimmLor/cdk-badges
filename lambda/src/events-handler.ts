@@ -188,6 +188,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         }
       )
     }
+  } else {
+    console.log('Unhandled event:', event)
   }
 
   promises.push(
