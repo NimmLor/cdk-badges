@@ -6,6 +6,7 @@ import {
   DescribeStacksCommand,
 } from '@aws-sdk/client-cloudformation'
 import {
+  GetObjectTaggingCommand,
   ListObjectsCommand,
   PutObjectCommand,
   S3Client,
@@ -36,6 +37,7 @@ const {
   BUCKET_NAME,
   SHOW_SECONDS,
   BADGE_STYLES,
+  TIMEZONE_DISPLAY_FORMAT,
 } = process.env
 
 if (
@@ -47,7 +49,8 @@ if (
   STACK_NAME === undefined ||
   BUCKET_NAME === undefined ||
   SHOW_SECONDS === undefined ||
-  BADGE_STYLES === undefined
+  BADGE_STYLES === undefined ||
+  TIMEZONE_DISPLAY_FORMAT === undefined
 ) {
   throw new Error('Missing required environment variables')
 }
@@ -65,6 +68,13 @@ export const LambdaEnvironment = {
   TIMEZONE,
 }
 
+export type Badge = {
+  key: string
+  tags: Record<string, string>
+  updatedAt: string
+  url: string
+}
+
 /**
  * Get the settings for localization
  */
@@ -74,6 +84,10 @@ export const getLocalization = () => {
     locale: LOCALE,
     showSeconds: SHOW_SECONDS === 'true',
     timezone: TIMEZONE,
+    timeZoneName:
+      TIMEZONE_DISPLAY_FORMAT === 'none'
+        ? undefined
+        : (TIMEZONE_DISPLAY_FORMAT as Intl.DateTimeFormatOptions['timeZoneName']),
   }
 }
 
@@ -83,8 +97,12 @@ export const getLocalization = () => {
 export const writeBadgeToS3 = async ({
   filekey,
   svg,
+  label,
+  style,
 }: {
   filekey: string
+  label: string
+  style: Format['style'] & string
   svg: string
 }) => {
   console.log(`Creating badge: ${filekey}`)
@@ -98,7 +116,9 @@ export const writeBadgeToS3 = async ({
       Key: filekey,
       Tagging: new URLSearchParams({
         generatedAt: new Date().toISOString(),
+        label,
         source: 'cdk-badges',
+        style,
       }).toString(),
     })
   )
@@ -146,19 +166,41 @@ export const getCfStackResources = async (stackName: string) => {
 /**
  * List all badges in S3
  */
-export const listS3Badges = async (prefix?: string) => {
+export const listS3Badges = async (
+  prefix?: string
+): Promise<Array<Omit<Badge, 'tags'>>> => {
   const items = await s3.send(
     new ListObjectsCommand({ Bucket: BUCKET_NAME, Prefix: prefix })
   )
 
   const badges =
     items.Contents?.map((item) => ({
-      key: item.Key,
-      updatedAt: item.LastModified,
+      key: item.Key as string,
+      updatedAt: item.LastModified
+        ? new Date(item.LastModified).toISOString()
+        : new Date().toISOString(),
       url: `${BASE_URL}/${item.Key}`,
     })) ?? []
 
   return badges
+}
+
+export const resolveS3ObjectTags = async (
+  badge: Omit<Badge, 'tags'>
+): Promise<Badge> => {
+  const response = await s3.send(
+    new GetObjectTaggingCommand({ Bucket: BUCKET_NAME, Key: badge.key })
+  )
+
+  return {
+    ...badge,
+    tags:
+      response.TagSet?.reduce((accumulator, tag) => {
+        if (tag.Key !== undefined && tag.Value !== undefined)
+          accumulator[tag.Key] = tag.Value
+        return accumulator
+      }, {}) ?? {},
+  }
 }
 
 /**
@@ -167,7 +209,8 @@ export const listS3Badges = async (prefix?: string) => {
 export const formatDateTime = (
   timestamp: Date | number | string | undefined
 ) => {
-  const { hour12, locale, showSeconds, timezone } = getLocalization()
+  const { hour12, locale, showSeconds, timezone, timeZoneName } =
+    getLocalization()
 
   if (timestamp === undefined) return 'unknown'
 
@@ -178,7 +221,7 @@ export const formatDateTime = (
     minute: '2-digit',
     month: '2-digit',
     timeZone: timezone,
-    timeZoneName: 'shortOffset',
+    timeZoneName,
     year: '2-digit',
     ...(showSeconds ? { second: '2-digit' } : {}),
   })

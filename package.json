@@ -29,7 +29,7 @@
     "watch": "npx projen watch",
     "projen": "npx projen",
     "cdk": "cdk",
-    "e2e": "yarn build && yarn cdk deploy --app \"./lib/integ.default.js\" --require-approval never"
+    "e2e": "yarn build && yarn cdk deploy --app \"./lib/integ.default.js\" --require-approval never --outputs-file ./cdk.out/integ-outputs.json"
   },
   "author": {
     "name": "Lorenz Nimmervoll",

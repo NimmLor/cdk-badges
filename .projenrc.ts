@@ -50,16 +50,26 @@ const project = new awscdk.AwsCdkConstructLibrary({
 project.setScript('cdk', 'cdk')
 project.setScript(
   'e2e',
-  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never'
+  'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never --outputs-file ./cdk.out/integ-outputs.json'
 )
 
-const buildLambdaTask = project.preCompileTask
+const buildTask = project.preCompileTask
 
-buildLambdaTask.exec(
+buildTask.exec(
+  'cd frontend && yarn install && yarn build --emptyOutDir && cd ..'
+)
+
+buildTask.exec(
   'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
 )
 
+// locate the output url and write it to .env.local
+buildTask.exec(
+  `node -e "const fs=require('fs');fs.writeFileSync('./frontend/.env.local','VITE_API_URL='+Object.entries(JSON.parse(fs.readFileSync('cdk.out/integ-outputs.json')).Test).find(([k])=>k.includes('BadgeUrl'))[1]);"`
+)
+
 project.tsconfigDev.addInclude('lambda/src/**/*.ts')
+project.tsconfigDev.addInclude('frontend/**/*.{ts,svelte}')
 
 new PrettierConfig(project)
 
@@ -67,16 +77,31 @@ new EslintConfig(project, {
   ignorePaths: ['lib/**/*'],
   projenFileRegex: '{src,test,lambda}/**/*.ts',
 })
+  .getFiles()
+  .eslintConfig.addOverride('overrides.1', {
+    extends: ['@atws/eslint-config'],
+    files: ['frontend/**/*.{ts,svelte}'],
+    parserOptions: {
+      project: 'frontend/tsconfig.json',
+    },
+  })
 
 new VscodeConfig(project, {
   vscodeExtensions: {
     addCdkExtensions: true,
     addCoreExtensions: true,
+    additionalExtensions: ['svelte.svelte-vscode'],
     addNodeExtensions: true,
   },
 })
 
-const ignorePatterns = ['.yarn/cache', '.yarn/install-state.gz']
+const ignorePatterns = [
+  'cache',
+  'install-state.gz',
+  '!frontend/tsconfig.json',
+  'frontend/dist',
+  '.env.local',
+]
 
 new GitConfig(project)
 project.gitignore.addPatterns(...ignorePatterns)
@@ -91,13 +116,16 @@ project.npmignore?.addPatterns(
   '.yarn',
   '.yarnrc.yml',
   'lambda',
+  'frontend',
   '!lib/lambda',
+  '!lib/lambda/frontend/index.html',
   '!lib',
   'dist',
   'logo.png',
   'ui.png',
   'yarn-error.log',
-  'tsconfig.tsbuildinfo'
+  'tsconfig.tsbuildinfo',
+  'cdk.out'
 )
 
 project.synth()

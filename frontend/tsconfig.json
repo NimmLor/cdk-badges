@@ -1,0 +1,10 @@
+{
+  "extends": "@atws/tsconfig/node18/svelte",
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "vite.config.ts"
+  ]
+}

@@ -228,6 +228,7 @@ const localizationSettings: LocalizationSettings = { ... }
 | <code><a href="#cdk-badges.LocalizationSettings.property.locale">locale</a></code> | <code>string</code> | The locale to use when generating badges. |
 | <code><a href="#cdk-badges.LocalizationSettings.property.showSeconds">showSeconds</a></code> | <code>boolean</code> | Wheter to show seconds in the time. |
 | <code><a href="#cdk-badges.LocalizationSettings.property.timezone">timezone</a></code> | <code>string</code> | The timezone to use when generating badges. |
+| <code><a href="#cdk-badges.LocalizationSettings.property.timezoneDisplayFormat">timezoneDisplayFormat</a></code> | <code>string</code> | The format of the timezone to display. |
 
 ---
 
@@ -296,6 +297,23 @@ The timezone to use when generating badges.
 'Europe/Vienna'
 ```
 
+
+##### `timezoneDisplayFormat`<sup>Optional</sup> <a name="timezoneDisplayFormat" id="cdk-badges.LocalizationSettings.property.timezoneDisplayFormat"></a>
+
+```typescript
+public readonly timezoneDisplayFormat: string;
+```
+
+- *Type:* string
+- *Default:* 'none'
+
+The format of the timezone to display.
+
+Sets the timeZoneName option of the Intl.DateTimeFormat constructor.
+
+> [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#parameters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#parameters)
+
+---
 
 
 

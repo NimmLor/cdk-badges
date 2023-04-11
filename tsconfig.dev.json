@@ -30,6 +30,7 @@
     "src/**/*.ts",
     "test/**/*.ts",
     "lambda/src/**/*.ts",
+    "frontend/**/*.{ts,svelte}",
     ".projenrc.ts",
     "projenrc/**/*.ts"
   ],

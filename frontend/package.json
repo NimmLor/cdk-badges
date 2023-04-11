@@ -1,0 +1,28 @@
+{
+  "name": "svelte-ssr",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tabler/icons-svelte": "^2.14.0"
+  },
+  "devDependencies": {
+    "@atws/tsconfig": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^2.0.4",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21",
+    "svelte": "^3.58.0",
+    "svelte-check": "^3.2.0",
+    "tailwindcss": "^3.3.1",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.1",
+    "vite-plugin-singlefile": "^0.13.5"
+  }
+}

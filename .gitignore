@@ -57,5 +57,8 @@ tsconfig.json
 !/.vscode/settings.json
 !/.editorconfig
 !/.vscode/extensions.json
-.yarn/cache
-.yarn/install-state.gz
+cache
+install-state.gz
+!frontend/tsconfig.json
+frontend/dist
+.env.local

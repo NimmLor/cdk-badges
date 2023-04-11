@@ -6,6 +6,7 @@ import { updateStackResourceCountBadge } from './trigger-handler'
 import { LambdaEnvironment, writeBadgeToS3 } from './utils'
 import type { StackStatus } from '@aws-sdk/client-cloudformation'
 import type { EventBridgeEvent, EventBridgeHandler } from 'aws-lambda'
+import type { Format } from 'badge-maker'
 
 type UnknownEvent = EventBridgeEvent<string, unknown>
 
@@ -25,7 +26,12 @@ const isCfStackEvent = (
 export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
   event
 ) => {
-  const badges: Array<{ filekey: string; svg: string }> = []
+  const badges: Array<{
+    filekey: string
+    label: string
+    style: Format['style'] & string
+    svg: string
+  }> = []
   const promises: Array<Promise<unknown>> = []
 
   console.log('Received event:', JSON.stringify(event, null, 2))
@@ -43,10 +49,14 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
       badges.push(
         {
           filekey: getCfBadgeKeys(stackName, style).status,
+          label: `${stackName} Generic Stack Status`,
+          style,
           svg: getCfStatusBadge({ status, updatedAt }, { style }),
         },
         {
           filekey: getCfBadgeKeys(stackName, style).namedStatus,
+          label: `${stackName} Stack Status`,
+          style,
           svg: getCfStatusBadge(
             { status, updatedAt },
             { label: `${stackName} Stack`, style }
@@ -54,10 +64,14 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         },
         {
           filekey: getCfBadgeKeys(stackName, style).statusDetailed,
+          label: `${stackName} Detailed Generic Stack Status`,
+          style,
           svg: getCfStatusBadge({ status, updatedAt }, { style }, true),
         },
         {
           filekey: getCfBadgeKeys(stackName, style).namedStatusDetailed,
+          label: `${stackName} Detailed Stack Status`,
+          style,
           svg: getCfStatusBadge(
             { status, updatedAt },
             { label: `${stackName} Stack`, style },
@@ -70,7 +84,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
 
   promises.push(
     ...badges.map(
-      async ({ filekey, svg }) => await writeBadgeToS3({ filekey, svg })
+      async ({ filekey, svg, label, style }) =>
+        await writeBadgeToS3({ filekey, label, style, svg })
     )
   )
 

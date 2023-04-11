@@ -14,6 +14,17 @@
       "parserOptions": {
         "project": "./tsconfig.dev.json"
       }
+    },
+    {
+      "extends": [
+        "@atws/eslint-config"
+      ],
+      "files": [
+        "frontend/**/*.{ts,svelte}"
+      ],
+      "parserOptions": {
+        "project": "frontend/tsconfig.json"
+      }
     }
   ],
   "root": true

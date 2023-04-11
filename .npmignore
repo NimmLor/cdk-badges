@@ -20,8 +20,11 @@ permissions-backup.acl
 /.projenrc.js
 /.eslintrc.json
 !.jsii
-.yarn/cache
-.yarn/install-state.gz
+cache
+install-state.gz
+!frontend/tsconfig.json
+frontend/dist
+.env.local
 .editorconfig
 .eslintignore
 .eslintrc
@@ -31,10 +34,13 @@ permissions-backup.acl
 .yarn
 .yarnrc.yml
 lambda
+frontend
 !lib/lambda
+!lib/lambda/frontend/index.html
 !lib
 dist
 logo.png
 ui.png
 yarn-error.log
 tsconfig.tsbuildinfo
+cdk.out
