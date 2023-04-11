@@ -114,13 +114,14 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
     for (const style of LambdaEnvironment.BADGE_STYLES) {
       badges.push(
         {
-          filekey: getBadgeKeys(pipeline, style).cf.status,
+          filekey: getBadgeKeys(pipeline, style).codepipeline
+            .pipelineStateDetailed,
           label: `${pipeline} Status`,
           style,
           svg: getCodePipelineStatusBadge({ state }, { style }, true),
         },
         {
-          filekey: getBadgeKeys(pipeline, style).cf.status,
+          filekey: getBadgeKeys(pipeline, style).codepipeline.pipelineState,
           label: `${pipeline} Generic Status`,
           style,
           svg: getCodePipelineStatusBadge({ state }, { style }),
