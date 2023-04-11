@@ -47,4 +47,4 @@ export class PipelineStack extends Stack {
 }
 
 const app = new App()
-new PipelineStack(app, 'cdk-badges-PipelineStack', {})
+new PipelineStack(app, 'cdk-badges-Pipeline', {})
