@@ -48,9 +48,9 @@
       </div>
     {/each}
     {#if isLoading}
-      <Skeleton class="h-7 !rounded-full w-24 mt-2" />
-      <Skeleton class="h-7 !rounded-full w-28 mt-2" />
-      <Skeleton class="h-7 !rounded-full w-20 mt-2" />
+      <Skeleton class="h-7 !rounded-full mr-3 w-24 mt-2" />
+      <Skeleton class="h-7 !rounded-full mr-3 w-28 mt-2" />
+      <Skeleton class="h-7 !rounded-full mr-3 w-20 mt-2" />
     {/if}
   </div>
 </div>

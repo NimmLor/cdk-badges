@@ -8,7 +8,6 @@ import { LambdaEnvironment, writeBadgeToS3 } from './utils'
 import type { StackStatus } from '@aws-sdk/client-cloudformation'
 import type { EventBridgeEvent, EventBridgeHandler } from 'aws-lambda'
 import type { Format } from 'badge-maker'
-import { promises } from 'dns'
 
 type UnknownEvent = EventBridgeEvent<string, unknown>
 
