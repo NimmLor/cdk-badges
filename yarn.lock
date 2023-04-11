@@ -3651,6 +3651,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aws-cdk@npm:^2.73.0":
+  version: 2.73.0
+  resolution: "aws-cdk@npm:2.73.0"
+  dependencies:
+    fsevents: 2.3.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    cdk: bin/cdk
+  checksum: 8228ba9c87ad443a00dd595c18b9b5dfd83a12cc6cc6d15f61a94490c8245aac1d555b56b5a9c7ef5c52c16190fe66f8023232e4003e76e3191a0f48c0a952ff
+  languageName: node
+  linkType: hard
+
 "axe-core@npm:^4.6.2":
   version: 4.6.3
   resolution: "axe-core@npm:4.6.3"
@@ -4046,6 +4060,7 @@ __metadata:
     "@types/node": ^14
     "@typescript-eslint/eslint-plugin": ^5
     "@typescript-eslint/parser": ^5
+    aws-cdk: ^2.73.0
     aws-cdk-lib: 2.21.0
     badge-maker: ^3.3.1
     constructs: 10.0.5
@@ -6400,7 +6415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@npm:^2.3.2":
+"fsevents@npm:2.3.2, fsevents@npm:^2.3.2":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
   dependencies:
@@ -6410,7 +6425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@^2.3.2#~builtin<compat/fsevents>":
+"fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@^2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
   resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:

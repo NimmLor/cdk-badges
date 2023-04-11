@@ -27,6 +27,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@types/aws-lambda',
     'lambda-api',
     'badge-maker',
+    'aws-cdk',
   ],
   gitignore: ['cdk.out', 'tsconfig.json'],
   jest: true,
