@@ -188,14 +188,17 @@ export class CdkBadges extends Construct {
       timeout: Duration.seconds(10),
     })
 
-    const eventBridgeCaptureResources: string[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const eventBridgeCaptureResources: any[] = []
 
     if (cloudformationCaptures?.enabled !== false) {
       const resources = new Set<string>()
 
       if (cloudformationCaptures?.captureAll !== false) {
         resources.add('arn:aws:cloudformation:*:*:stack/*')
-        eventBridgeCaptureResources.push('arn:aws:cloudformation:*')
+        eventBridgeCaptureResources.push({
+          prefix: 'arn:aws:cloudformation:',
+        })
       } else if (cloudformationCaptures?.resourceArns) {
         for (const arn of cloudformationCaptures.resourceArns) {
           resources.add(arn)
@@ -238,7 +241,9 @@ export class CdkBadges extends Construct {
     if (codepipelineCaptures?.enabled !== false) {
       source.push('aws.codepipeline')
       if (codepipelineCaptures?.captureAll !== false) {
-        eventBridgeCaptureResources.push('arn:aws:codepipeline:*')
+        eventBridgeCaptureResources.push({
+          prefix: 'arn:aws:codepipeline:',
+        })
       } else if (codepipelineCaptures?.resourceArns) {
         for (const arn of codepipelineCaptures.resourceArns) {
           eventBridgeCaptureResources.push(arn)
