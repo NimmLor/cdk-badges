@@ -3,7 +3,7 @@ import type { BadgeProps } from './utils'
 import { formatDateTime } from './utils'
 import { makeBadge } from 'badge-maker'
 
-type CodePipelineState = 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
+export type CodePipelineState = 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
 
 const mapCodePipelineStateToReadable = (
   state: CodePipelineState

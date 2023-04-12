@@ -1,7 +1,10 @@
 /* eslint-disable no-console */
 
 import { getCfStatusBadge } from './cf-badges'
-import { getCodePipelineStatusBadge } from './codepipeline-badges'
+import {
+  type CodePipelineState,
+  getCodePipelineStatusBadge,
+} from './codepipeline-badges'
 import { getBadgeKeys } from './filenames'
 import { updateStackResourceCountBadge } from './trigger-handler'
 import { LambdaEnvironment, writeBadgeToS3 } from './utils'
@@ -31,8 +34,8 @@ const isCodePipelineStatusEvent = (
   {
     'execution-id': string
     pipeline: string
-    state: 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
-    version: number | string
+    state: CodePipelineState
+    version: number
   }
 > => event['detail-type'] === 'CodePipeline Pipeline Execution State Change'
 
@@ -41,13 +44,11 @@ const isCodePipelineStageEvent = (
 ): event is EventBridgeEvent<
   'CodePipeline Stage Execution State Change',
   {
-    detail: {
-      'execution-id': string
-      pipeline: string
-      stage: string
-      state: 'FAILED' | 'STARTED' | 'STOPPED' | 'SUCCEEDED'
-      version: 1
-    }
+    'execution-id': string
+    pipeline: string
+    stage: string
+    state: CodePipelineState
+    version: number
   }
 > => event['detail-type'] === 'CodePipeline Stage Execution State Change'
 
@@ -150,7 +151,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
       )
     }
   } else if (isCodePipelineStageEvent(event)) {
-    const { state, pipeline, stage } = event.detail.detail
+    const { state, pipeline, stage } = event.detail
     for (const style of LambdaEnvironment.BADGE_STYLES) {
       badges.push(
         {
