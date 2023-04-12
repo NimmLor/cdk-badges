@@ -1,12 +1,17 @@
 import { getCfResourceCountBadge } from './cf-badges'
-import { getCfBadgeKeys } from './filenames'
-import { getCfStackResources, LambdaEnvironment, writeBadgeToS3 } from './utils'
+import { getBadgeKeys } from './filenames'
+import {
+  getCfStackResources,
+  LambdaEnvironment,
+  ServiceName,
+  writeBadgeToS3,
+} from './utils'
 import type { Format } from 'badge-maker'
 
-const { STACK_NAME, BADGE_STYLES } = LambdaEnvironment
+const { BADGE_STYLES } = LambdaEnvironment
 
-export const updateStackResourceCountBadge = async () => {
-  const resources = await getCfStackResources(STACK_NAME)
+export const updateStackResourceCountBadge = async (stackName) => {
+  const resources = await getCfStackResources(stackName)
 
   const badges: Array<{
     filekey: string
@@ -18,17 +23,17 @@ export const updateStackResourceCountBadge = async () => {
   for (const style of BADGE_STYLES) {
     badges.push(
       {
-        filekey: getCfBadgeKeys(STACK_NAME, style).resourceCount,
-        label: `${STACK_NAME} Generic Stack Resource Count`,
+        filekey: getBadgeKeys(stackName, style).cf.resourceCount,
+        label: `${stackName} Generic Stack Resource Count`,
         style,
         svg: getCfResourceCountBadge(resources.length, { style }),
       },
       {
-        filekey: getCfBadgeKeys(STACK_NAME, style).namedResourceCount,
-        label: `${STACK_NAME} Stack Resource Count`,
+        filekey: getBadgeKeys(stackName, style).cf.namedResourceCount,
+        label: `${stackName} Stack Resource Count`,
         style,
         svg: getCfResourceCountBadge(resources.length, {
-          label: `${STACK_NAME} Stack`,
+          label: `${stackName} Stack`,
           style,
         }),
       }
@@ -38,7 +43,13 @@ export const updateStackResourceCountBadge = async () => {
   await Promise.all(
     badges.map(
       async ({ filekey, svg, label, style }) =>
-        await writeBadgeToS3({ filekey, label, style, svg })
+        await writeBadgeToS3({
+          filekey,
+          label,
+          serviceName: ServiceName.CF,
+          style,
+          svg,
+        })
     )
   )
 }

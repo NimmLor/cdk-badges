@@ -27,6 +27,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@types/aws-lambda',
     'lambda-api',
     'badge-maker',
+    'aws-cdk',
   ],
   gitignore: ['cdk.out', 'tsconfig.json'],
   jest: true,
@@ -47,10 +48,32 @@ const project = new awscdk.AwsCdkConstructLibrary({
   workflowNodeVersion: '16.x',
 })
 
+const buildLambdaCommand =
+  'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external":@aws-sdk/*" --minify --target=ES2022 --format=cjs'
+
 project.setScript('cdk', 'cdk')
 project.setScript(
   'e2e',
   'yarn build && yarn cdk deploy --app "./lib/integ.default.js" --require-approval never --outputs-file ./cdk.out/integ-outputs.json'
+)
+
+project.setScript(
+  'e2e:synth',
+  'yarn build && yarn cdk synth --app "./lib/integ.default.js"'
+)
+
+project.setScript(
+  'deploy:lambda',
+  `${buildLambdaCommand} && yarn cdk deploy --app "ts-node ./src/integ.default.ts" --require-approval never --hotswap --outputs-file ./cdk.out/integ-outputs.json`
+)
+
+project.setScript(
+  'ci:synth',
+  'yarn run build && yarn cdk synth --app "ts-node ./src/integ.pipeline.ts" --require-approval never'
+)
+project.setScript(
+  'deploy:pipeline',
+  'yarn cdk deploy --app "ts-node ./src/integ.pipeline.ts" --require-approval never'
 )
 
 const buildTask = project.preCompileTask
@@ -59,9 +82,7 @@ buildTask.exec(
   'cd frontend && yarn install && yarn build --emptyOutDir && cd ..'
 )
 
-buildTask.exec(
-  'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
-)
+buildTask.exec(buildLambdaCommand)
 
 // locate the output url and write it to .env.local
 buildTask.exec(

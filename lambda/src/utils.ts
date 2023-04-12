@@ -13,6 +13,12 @@ import {
 } from '@aws-sdk/client-s3'
 import type { Format } from 'badge-maker'
 
+export type BadgeProps = {
+  color?: string
+  label?: string
+  style?: Format['style']
+}
+
 export type StackInfo = Partial<{
   createdAt: Stack['CreationTime']
   driftInfo: Stack['DriftInformation']
@@ -23,6 +29,11 @@ export type StackInfo = Partial<{
   statusReason: Stack['StackStatusReason']
   updatedAt: Stack['LastUpdatedTime']
 }>
+
+export enum ServiceName {
+  CF = 'CloudFormation',
+  CODE_PIPELINE = 'CodePipeline',
+}
 
 const cf = new CloudFormationClient({})
 const s3 = new S3Client({})
@@ -99,9 +110,11 @@ export const writeBadgeToS3 = async ({
   svg,
   label,
   style,
+  serviceName,
 }: {
   filekey: string
   label: string
+  serviceName: string
   style: Format['style'] & string
   svg: string
 }) => {
@@ -117,6 +130,7 @@ export const writeBadgeToS3 = async ({
       Tagging: new URLSearchParams({
         generatedAt: new Date().toISOString(),
         label,
+        serviceName,
         source: 'cdk-badges',
         style,
       }).toString(),

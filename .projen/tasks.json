@@ -196,7 +196,7 @@
           "exec": "cd frontend && yarn install && yarn build --emptyOutDir && cd .."
         },
         {
-          "exec": "esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs"
+          "exec": "esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external\":@aws-sdk/*\" --minify --target=ES2022 --format=cjs"
         },
         {
           "exec": "node -e \"const fs=require('fs');try{fs.writeFileSync('./frontend/.env.local','VITE_API_URL='+Object.entries(JSON.parse(fs.readFileSync('cdk.out/integ-outputs.json')).Test).find(([k])=>k.includes('BadgeUrl'))[1])}catch{};\""

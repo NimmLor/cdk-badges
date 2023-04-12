@@ -72,6 +72,27 @@ export type BadgeStyle =
   | 'plastic'
   | 'social'
 
+export interface CaptureSettings {
+  /**
+   * Whether to capture all pipelines in the account.
+   *
+   * @default true
+   */
+  readonly captureAll?: boolean
+  /**
+   * Enable the codepipeline capture.
+   *
+   * @default true
+   */
+  readonly enabled?: boolean
+  /**
+   * The name of the pipeline that should be monitored for changes.
+   *
+   * Must be set if captureAll is false.
+   */
+  readonly resourceArns?: string[]
+}
+
 export interface CdkBadgesProps {
   /**
    * Whether to add a preview webapp to the stack.
@@ -79,11 +100,6 @@ export interface CdkBadgesProps {
    * @default true
    */
   readonly addPreviewWebapp?: boolean
-  /**
-   * The arn of the stack that should be monitored for changes.
-   */
-  readonly additionalCfnStacks?: string[]
-
   /**
    * The style of the badge to generate.
    *
@@ -99,6 +115,18 @@ export interface CdkBadgesProps {
   readonly cacheControl?: string
 
   /**
+   * The settings for creating cloudformation badges.
+   */
+  readonly cloudformationCaptures?: CaptureSettings
+
+  /**
+   * The settings for creating codepipeline badges.
+   *
+   * @default captureAll: true
+   */
+  readonly codepipelineCaptures?: CaptureSettings
+
+  /**
    * The formatting of the timestamps used in the badges.
    */
   readonly localization?: LocalizationSettings
@@ -109,15 +137,18 @@ export class CdkBadges extends Construct {
 
   public hostingBucket: aws_s3.Bucket
 
+  public functionUrl: aws_lambda.FunctionUrl | undefined
+
   public constructor(scope: Stack, id: string, props: CdkBadgesProps) {
     super(scope, id)
 
     const {
-      additionalCfnStacks,
+      cloudformationCaptures,
       cacheControl,
       localization,
       badgeStyles,
       addPreviewWebapp,
+      codepipelineCaptures,
     } = props
 
     this.hostingBucket = new aws_s3.Bucket(this, 'hostingBucket', {
@@ -159,15 +190,37 @@ export class CdkBadges extends Construct {
       timeout: Duration.seconds(10),
     })
 
-    this.lambdaHandler.addToRolePolicy(
-      new aws_iam.PolicyStatement({
-        actions: [
-          'cloudformation:DescribeStacks',
-          'cloudformation:DescribeStackResources',
-        ],
-        resources: [Stack.of(this).stackId, ...(additionalCfnStacks ?? [])],
-      })
-    )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const eventBridgeCaptureResources: any[] = []
+
+    if (cloudformationCaptures?.enabled !== false) {
+      const resources = new Set<string>()
+
+      if (cloudformationCaptures?.captureAll !== false) {
+        resources.add('arn:aws:cloudformation:*:*:stack/*')
+        eventBridgeCaptureResources.push({
+          prefix: 'arn:aws:cloudformation:',
+        })
+      } else if (cloudformationCaptures?.resourceArns) {
+        for (const arn of cloudformationCaptures.resourceArns) {
+          resources.add(arn)
+          eventBridgeCaptureResources.push(arn)
+        }
+
+        resources.add(Stack.of(this).stackId)
+        eventBridgeCaptureResources.push(Stack.of(this).stackId)
+      }
+
+      this.lambdaHandler.addToRolePolicy(
+        new aws_iam.PolicyStatement({
+          actions: [
+            'cloudformation:DescribeStacks',
+            'cloudformation:DescribeStackResources',
+          ],
+          resources: [...resources],
+        })
+      )
+    }
 
     this.lambdaHandler.addToRolePolicy(
       new aws_iam.PolicyStatement({
@@ -185,9 +238,30 @@ export class CdkBadges extends Construct {
       })
     )
 
+    const source = ['aws.cloudformation']
+
+    if (codepipelineCaptures?.enabled !== false) {
+      source.push('aws.codepipeline')
+      if (codepipelineCaptures?.captureAll !== false) {
+        eventBridgeCaptureResources.push({
+          prefix: 'arn:aws:codepipeline:',
+        })
+      } else if (codepipelineCaptures?.resourceArns) {
+        for (const arn of codepipelineCaptures.resourceArns) {
+          eventBridgeCaptureResources.push(arn)
+        }
+      }
+    }
+
     const eventRule = new aws_events.Rule(this, 'Rule', {
       eventPattern: {
-        source: ['aws.cloudformation'],
+        detailType: [
+          'CloudFormation Stack Status Change',
+          'CodePipeline Pipeline Execution State Change',
+          'CodePipeline Stage Execution State Change',
+        ],
+        resources: eventBridgeCaptureResources,
+        source: ['aws.cloudformation', 'aws.codepipeline'],
       },
     })
 
@@ -199,12 +273,12 @@ export class CdkBadges extends Construct {
     eventRule.addTarget(target)
 
     if (addPreviewWebapp !== false) {
-      const functionUrl = this.lambdaHandler.addFunctionUrl({
+      this.functionUrl = this.lambdaHandler.addFunctionUrl({
         authType: aws_lambda.FunctionUrlAuthType.NONE,
       })
 
       new CfnOutput(this, 'BadgeUrl', {
-        value: functionUrl.url,
+        value: this.functionUrl.url,
       })
     }
 

@@ -29,7 +29,11 @@
     "watch": "npx projen watch",
     "projen": "npx projen",
     "cdk": "cdk",
-    "e2e": "yarn build && yarn cdk deploy --app \"./lib/integ.default.js\" --require-approval never --outputs-file ./cdk.out/integ-outputs.json"
+    "e2e": "yarn build && yarn cdk deploy --app \"./lib/integ.default.js\" --require-approval never --outputs-file ./cdk.out/integ-outputs.json",
+    "e2e:synth": "yarn build && yarn cdk synth --app \"./lib/integ.default.js\"",
+    "deploy:lambda": "esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external\":@aws-sdk/*\" --minify --target=ES2022 --format=cjs && yarn cdk deploy --app \"ts-node ./src/integ.default.ts\" --require-approval never --hotswap --outputs-file ./cdk.out/integ-outputs.json",
+    "ci:synth": "yarn run build && yarn cdk synth --app \"ts-node ./src/integ.pipeline.ts\" --require-approval never",
+    "deploy:pipeline": "yarn cdk deploy --app \"ts-node ./src/integ.pipeline.ts\" --require-approval never"
   },
   "author": {
     "name": "Lorenz Nimmervoll",
@@ -40,7 +44,7 @@
     "@atws/eslint-config": "^1.7.12",
     "@atws/prettier-config": "^1.2.0",
     "@atws/projen-config": "^1.9.5",
-    "@atws/tsconfig": "^1.4.3",
+    "@atws/tsconfig": "2.0.1",
     "@aws-sdk/client-cloudformation": "3.188.0",
     "@aws-sdk/client-s3": "3.188.0",
     "@types/aws-lambda": "^8.10.113",
@@ -48,6 +52,7 @@
     "@types/node": "^14",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
+    "aws-cdk": "^2.73.0",
     "aws-cdk-lib": "2.21.0",
     "badge-maker": "^3.3.1",
     "constructs": "10.0.5",

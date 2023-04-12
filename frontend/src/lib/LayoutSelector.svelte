@@ -1,9 +1,14 @@
 <script lang="ts">
-  import { IconList } from '@tabler/icons-svelte'
+  import {
+    IconCode,
+    IconList,
+    IconSignature,
+    IconSparkles,
+  } from '@tabler/icons-svelte'
 
-  type DisplayMode = 'grid' | 'byStyle' | 'byLabel'
+  type DisplayMode = 'list' | 'byStyle' | 'byLabel' | 'byService'
 
-  export let value: DisplayMode = 'grid'
+  export let value: DisplayMode = 'list'
   export let onChange = (value: DisplayMode) => value
 </script>
 
@@ -13,22 +18,29 @@
   >
     <button
       type="button"
+      aria-pressed={value === 'byService'}
+      on:click={() => onChange('byService')}
+    >
+      <IconCode class="w-4 h-4 mr-2" /> by Service
+    </button>
+    <button
+      type="button"
       aria-pressed={value === 'byLabel'}
       on:click={() => onChange('byLabel')}
     >
-      <IconList class="w-4 h-4 mr-2" /> by Label
+      <IconSignature class="w-4 h-4 mr-2" /> by Label
     </button>
     <button
       type="button"
       aria-pressed={value === 'byStyle'}
       on:click={() => onChange('byStyle')}
     >
-      <IconList class="w-4 h-4 mr-2" /> by Style
+      <IconSparkles class="w-4 h-4 mr-2" /> by Style
     </button>
     <button
       type="button"
-      aria-pressed={value === 'grid'}
-      on:click={() => onChange('grid')}
+      aria-pressed={value === 'list'}
+      on:click={() => onChange('list')}
     >
       <IconList class="w-4 h-4 mr-2" /> List
     </button>

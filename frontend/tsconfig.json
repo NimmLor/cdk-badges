@@ -6,5 +6,6 @@
     "src/**/*.js",
     "src/**/*.svelte",
     "vite.config.ts"
-  ]
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

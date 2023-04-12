@@ -1,20 +1,31 @@
 import { CdkBadges } from '.'
 import { App, Stack } from 'aws-cdk-lib'
+import type { Construct } from 'constructs'
 
 const app = new App()
-const stack = new Stack(app, 'Test')
 
-new CdkBadges(stack, 'Badges', {
-  additionalCfnStacks: [
-    'arn:aws:cloudformation:eu-central-1:123456789012:stack/MyStack/12345678-1234-1234-1234-123456789012',
-  ],
-  addPreviewWebapp: true,
-  badgeStyles: ['flat-square', 'for-the-badge'],
-  cacheControl: 'max-age=300',
-  localization: {
-    hour12: false,
-    locale: 'de-AT',
-    showSeconds: false,
-    timezone: 'Europe/Vienna',
-  },
-})
+export const getTestStack = (scope: App | Construct, stackName: string) => {
+  const stack = new Stack(scope, stackName)
+
+  new CdkBadges(stack, 'Badges', {
+    addPreviewWebapp: true,
+    badgeStyles: ['flat-square', 'for-the-badge'],
+    cacheControl: 'max-age=300',
+    cloudformationCaptures: {
+      captureAll: true,
+      enabled: true,
+    },
+    codepipelineCaptures: {
+      captureAll: true,
+      enabled: true,
+    },
+    localization: {
+      hour12: false,
+      locale: 'de-AT',
+      showSeconds: false,
+      timezone: 'Europe/Vienna',
+    },
+  })
+}
+
+getTestStack(app, 'cdk-badges-Test')
