@@ -169,8 +169,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
     for (const style of LambdaEnvironment.BADGE_STYLES) {
       badges.push(
         {
-          filekey: getBadgeKeys(pipeline, style).codepipeline
-            .stageStateDetailed,
+          filekey: getBadgeKeys(`${pipeline}/stage/${stage}`, style)
+            .codepipeline.stageStateDetailed,
           label: `${pipeline}: ${stage} - Stage Fullname Detailed Status`,
           serviceName: ServiceName.CP,
           style,
@@ -181,7 +181,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           ),
         },
         {
-          filekey: getBadgeKeys(pipeline, style).codepipeline.stageState,
+          filekey: getBadgeKeys(`${pipeline}/stage/${stage}`, style)
+            .codepipeline.stageState,
           label: `${pipeline}: ${stage} - Stage Fullname Status`,
           serviceName: ServiceName.CP,
           style,
@@ -191,8 +192,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           ),
         },
         {
-          filekey: getBadgeKeys(pipeline, style).codepipeline
-            .stageStateNamedDetailed,
+          filekey: getBadgeKeys(`${pipeline}/stage/${stage}`, style)
+            .codepipeline.stageStateNamedDetailed,
           label: `${pipeline}: ${stage} - Stage Detailed Status`,
           serviceName: ServiceName.CP,
           style,
@@ -203,7 +204,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           ),
         },
         {
-          filekey: getBadgeKeys(pipeline, style).codepipeline.stageStateNamed,
+          filekey: getBadgeKeys(`${pipeline}/stage/${stage}`, style)
+            .codepipeline.stageStateNamed,
           label: `${pipeline}: ${stage} - Stage Status`,
           serviceName: ServiceName.CP,
           style,
