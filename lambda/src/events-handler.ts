@@ -52,12 +52,18 @@ const isCodePipelineStageEvent = (
   }
 > => event['detail-type'] === 'CodePipeline Stage Execution State Change'
 
+enum ServiceName {
+  CF = 'CloudFormation',
+  CP = 'CodePipeline',
+}
+
 export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
   event
 ) => {
   const badges: Array<{
     filekey: string
     label: string
+    serviceName: string
     style: Format['style'] & string
     svg: string
   }> = []
@@ -79,12 +85,14 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(stackName, style).cf.status,
           label: `${stackName} Generic Stack Status`,
+          serviceName: ServiceName.CF,
           style,
           svg: getCfStatusBadge({ status, updatedAt }, { style }),
         },
         {
           filekey: getBadgeKeys(stackName, style).cf.namedStatus,
           label: `${stackName} Stack Status`,
+          serviceName: ServiceName.CF,
           style,
           svg: getCfStatusBadge(
             { status, updatedAt },
@@ -94,12 +102,14 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(stackName, style).cf.statusDetailed,
           label: `${stackName} Detailed Generic Stack Status`,
+          serviceName: ServiceName.CF,
           style,
           svg: getCfStatusBadge({ status, updatedAt }, { style }, true),
         },
         {
           filekey: getBadgeKeys(stackName, style).cf.namedStatusDetailed,
           label: `${stackName} Detailed Stack Status`,
+          serviceName: ServiceName.CF,
           style,
           svg: getCfStatusBadge(
             { status, updatedAt },
@@ -118,12 +128,14 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .pipelineStateDetailed,
           label: `${pipeline} Generic Detailed Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge({ state }, { style }, true),
         },
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline.pipelineState,
           label: `${pipeline} Generic Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge({ state }, { style }),
         },
@@ -131,6 +143,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .pipelineStateNamedDetailed,
           label: `${pipeline} Detailed Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
             { state },
@@ -142,6 +155,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .pipelineStateNamed,
           label: `${pipeline} Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
             { state },
@@ -158,6 +172,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .stageStateDetailed,
           label: `${stage} - Stage Fullname Detailed Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
             { stage, state },
@@ -168,6 +183,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline.stageState,
           label: `${stage} - Stage Fullname Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
             { stage, state },
@@ -178,6 +194,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .stageStateNamedDetailed,
           label: `${stage} - Stage Detailed Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
             { stage, state },
@@ -188,6 +205,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline.stageStateNamed,
           label: `${stage} - Stage Status`,
+          serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
             { stage, state },
