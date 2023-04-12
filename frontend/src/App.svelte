@@ -7,6 +7,7 @@
   import Filter from './lib/Filter.svelte'
   import BadgeCategory from './lib/BadgeCategory.svelte'
   import LayoutSelector from './lib/LayoutSelector.svelte'
+  import NoBadgesFound from './lib/NoBadgesFound.svelte'
 
   let baseUrl = import.meta.env['VITE_API_URL'] ?? window.location.origin
   if (baseUrl.endsWith('/')) {
@@ -24,6 +25,7 @@
 
   onMount(async () => {
     response = await fetch(url).then((r) => r.json())
+    // response = { badges: [], baseUrl: '', stackName: 'temp' }
   })
 
   let styleFilter: Record<string, boolean> = {}
@@ -68,7 +70,7 @@
     return acc
   }, {} as Record<string, Array<{ badge: Badge; isVisible: boolean }>>)
 
-  let displayStyle: 'grid' | 'byStyle' | 'byLabel' | 'byService' = 'byLabel'
+  let displayStyle: 'list' | 'byStyle' | 'byLabel' | 'byService' = 'byService'
 </script>
 
 <main class="max-w-4xl px-4 pt-6 pb-32 mx-auto">
@@ -120,26 +122,39 @@
           <div class="mb-44 mt-8">
             <Spinner />
           </div>
-        {:else if displayStyle === 'grid'}
-          <div
-            class="lg:grid-cols-2 gap-x-6 gap-y-4 grid mt-8 transition-all duration-500"
-          >
-            {#each badges as badge}
-              <BadgePreview badge={badge.badge} isVisible={badge.isVisible} />
-            {/each}
-          </div>
+        {:else if displayStyle === 'list'}
+          {#if badges.length === 0}
+            <NoBadgesFound />
+          {:else}
+            <div
+              class="lg:grid-cols-2 gap-x-6 gap-y-4 grid mt-8 transition-all duration-500"
+            >
+              {#each badges as badge}
+                <BadgePreview badge={badge.badge} isVisible={badge.isVisible} />
+              {/each}
+            </div>
+          {/if}
         {:else if displayStyle === 'byStyle'}
           {#each Object.entries(badgesByStyle) as style}
             <BadgeCategory label={style[0]} badges={style[1]} />
           {/each}
+          {#if Object.keys(badgesByStyle).length === 0}
+            <NoBadgesFound />
+          {/if}
         {:else if displayStyle === 'byService'}
           {#each Object.entries(badgesByService) as service}
             <BadgeCategory label={service[0]} badges={service[1]} />
           {/each}
+          {#if Object.keys(badgesByService).length === 0}
+            <NoBadgesFound />
+          {/if}
         {:else if displayStyle === 'byLabel'}
           {#each Object.entries(badgesByLabel) as label}
             <BadgeCategory label={label[0]} badges={label[1]} />
           {/each}
+          {#if Object.keys(badgesByLabel).length === 0}
+            <NoBadgesFound />
+          {/if}
         {/if}
       </div>
     </div>

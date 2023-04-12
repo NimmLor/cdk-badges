@@ -1,12 +1,7 @@
 <script lang="ts">
   import type { Badge } from '../types.js'
 
-  export let badge: Badge = {
-    key: '',
-    updatedAt: '',
-    url: '',
-    tags: {},
-  }
+  export let badge: Badge
 
   export let isVisible = true
 </script>

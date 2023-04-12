@@ -34,11 +34,13 @@
           label={choice[0]}
           onToggle={() => {
             chipFilter[choice[0]] = !chipFilter[choice[0]]
-            if (Object.values(chipFilter).every((v) => !v)) {
-              Object.keys(chipFilter).forEach((choiceKey) => {
-                chipFilter[choiceKey] = true
-              })
-            }
+
+            // select all if none are selected
+            // if (Object.values(chipFilter).every((v) => !v)) {
+            //   Object.keys(chipFilter).forEach((choiceKey) => {
+            //     chipFilter[choiceKey] = true
+            //   })
+            // }
           }}
         />
       </div>

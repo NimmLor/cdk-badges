@@ -6,9 +6,9 @@
     IconSparkles,
   } from '@tabler/icons-svelte'
 
-  type DisplayMode = 'grid' | 'byStyle' | 'byLabel' | 'byService'
+  type DisplayMode = 'list' | 'byStyle' | 'byLabel' | 'byService'
 
-  export let value: DisplayMode = 'grid'
+  export let value: DisplayMode = 'list'
   export let onChange = (value: DisplayMode) => value
 </script>
 
@@ -18,17 +18,17 @@
   >
     <button
       type="button"
-      aria-pressed={value === 'byLabel'}
-      on:click={() => onChange('byLabel')}
-    >
-      <IconSignature class="w-4 h-4 mr-2" /> by Label
-    </button>
-    <button
-      type="button"
       aria-pressed={value === 'byService'}
       on:click={() => onChange('byService')}
     >
       <IconCode class="w-4 h-4 mr-2" /> by Service
+    </button>
+    <button
+      type="button"
+      aria-pressed={value === 'byLabel'}
+      on:click={() => onChange('byLabel')}
+    >
+      <IconSignature class="w-4 h-4 mr-2" /> by Label
     </button>
     <button
       type="button"
@@ -39,8 +39,8 @@
     </button>
     <button
       type="button"
-      aria-pressed={value === 'grid'}
-      on:click={() => onChange('grid')}
+      aria-pressed={value === 'list'}
+      on:click={() => onChange('list')}
     >
       <IconList class="w-4 h-4 mr-2" /> List
     </button>
