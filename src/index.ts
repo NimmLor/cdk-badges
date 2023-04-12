@@ -137,6 +137,8 @@ export class CdkBadges extends Construct {
 
   public hostingBucket: aws_s3.Bucket
 
+  public functionUrl: aws_lambda.FunctionUrl | undefined
+
   public constructor(scope: Stack, id: string, props: CdkBadgesProps) {
     super(scope, id)
 
@@ -266,12 +268,12 @@ export class CdkBadges extends Construct {
     eventRule.addTarget(target)
 
     if (addPreviewWebapp !== false) {
-      const functionUrl = this.lambdaHandler.addFunctionUrl({
+      this.functionUrl = this.lambdaHandler.addFunctionUrl({
         authType: aws_lambda.FunctionUrlAuthType.NONE,
       })
 
       new CfnOutput(this, 'BadgeUrl', {
-        value: functionUrl.url,
+        value: this.functionUrl.url,
       })
     }
 

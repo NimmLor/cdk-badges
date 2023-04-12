@@ -19,7 +19,14 @@ Generate Badges for your cloudformation stacks.
 
 ```ts
 new CdkBadges(stack, 'Badges', {
-  additionalCfnStacks: [],
+  cloudformationCaptures: {
+    captureAll: true,
+    enabled: true,
+  },
+  codepipelineCaptures: {
+    captureAll: true,
+    enabled: true,
+  },
   badgeStyles: ['flat-square'],
   cacheControl: 'max-age=300',
   localization: {
@@ -35,10 +42,7 @@ new CdkBadges(stack, 'Badges', {
 
 - [x] Generate badges for your stacks
 - [x] View all available badges in a web ui
-- [ ] Generate badges for aws codepipeline
-- [ ] Generate badges for aws codebuild
-- [ ] Add option to add cloudfront in front of the s3 bucket
-- [ ] Add option to add a custom domain
+- [x] Generate badges for aws codepipeline
 
 ### Available Badges
 
@@ -50,3 +54,8 @@ new CdkBadges(stack, 'Badges', {
 The web ui shows all available badges in the specified s3 bucket. It can be accessed via the cloudformation output.
 
 [![web-ui](ui.png)](https://github.com/NimmLor/cdk-badges)
+
+### Adding a custom domain
+
+To add a custom domain for badges you should use a cloudfront distribution.
+Create a cloudfront distribution with the s3 bucket as origin and add a custom domain. Specify the root object to use the lambda function url as an origin.
