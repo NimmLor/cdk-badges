@@ -125,6 +125,66 @@ public readonly lambdaHandler: NodejsFunction;
 
 ## Structs <a name="Structs" id="Structs"></a>
 
+### CaptureSettings <a name="CaptureSettings" id="cdk-badges.CaptureSettings"></a>
+
+#### Initializer <a name="Initializer" id="cdk-badges.CaptureSettings.Initializer"></a>
+
+```typescript
+import { CaptureSettings } from 'cdk-badges'
+
+const captureSettings: CaptureSettings = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-badges.CaptureSettings.property.captureAll">captureAll</a></code> | <code>boolean</code> | Whether to capture all pipelines in the account. |
+| <code><a href="#cdk-badges.CaptureSettings.property.enabled">enabled</a></code> | <code>boolean</code> | Enable the codepipeline capture. |
+| <code><a href="#cdk-badges.CaptureSettings.property.resourceArns">resourceArns</a></code> | <code>string[]</code> | The name of the pipeline that should be monitored for changes. |
+
+---
+
+##### `captureAll`<sup>Optional</sup> <a name="captureAll" id="cdk-badges.CaptureSettings.property.captureAll"></a>
+
+```typescript
+public readonly captureAll: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether to capture all pipelines in the account.
+
+---
+
+##### `enabled`<sup>Optional</sup> <a name="enabled" id="cdk-badges.CaptureSettings.property.enabled"></a>
+
+```typescript
+public readonly enabled: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Enable the codepipeline capture.
+
+---
+
+##### `resourceArns`<sup>Optional</sup> <a name="resourceArns" id="cdk-badges.CaptureSettings.property.resourceArns"></a>
+
+```typescript
+public readonly resourceArns: string[];
+```
+
+- *Type:* string[]
+
+The name of the pipeline that should be monitored for changes.
+
+Must be set if captureAll is false.
+
+---
+
 ### CdkBadgesProps <a name="CdkBadgesProps" id="cdk-badges.CdkBadgesProps"></a>
 
 #### Initializer <a name="Initializer" id="cdk-badges.CdkBadgesProps.Initializer"></a>
@@ -139,23 +199,12 @@ const cdkBadgesProps: CdkBadgesProps = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-badges.CdkBadgesProps.property.additionalCfnStacks">additionalCfnStacks</a></code> | <code>string[]</code> | The arn of the stack that should be monitored for changes. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.addPreviewWebapp">addPreviewWebapp</a></code> | <code>boolean</code> | Whether to add a preview webapp to the stack. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.badgeStyles">badgeStyles</a></code> | <code>string[]</code> | The style of the badge to generate. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.cacheControl">cacheControl</a></code> | <code>string</code> | The cache control header to use when writing badges to S3. |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.cloudformationCaptures">cloudformationCaptures</a></code> | <code><a href="#cdk-badges.CaptureSettings">CaptureSettings</a></code> | The settings for creating cloudformation badges. |
+| <code><a href="#cdk-badges.CdkBadgesProps.property.codepipelineCaptures">codepipelineCaptures</a></code> | <code><a href="#cdk-badges.CaptureSettings">CaptureSettings</a></code> | The settings for creating codepipeline badges. |
 | <code><a href="#cdk-badges.CdkBadgesProps.property.localization">localization</a></code> | <code><a href="#cdk-badges.LocalizationSettings">LocalizationSettings</a></code> | The formatting of the timestamps used in the badges. |
-
----
-
-##### `additionalCfnStacks`<sup>Optional</sup> <a name="additionalCfnStacks" id="cdk-badges.CdkBadgesProps.property.additionalCfnStacks"></a>
-
-```typescript
-public readonly additionalCfnStacks: string[];
-```
-
-- *Type:* string[]
-
-The arn of the stack that should be monitored for changes.
 
 ---
 
@@ -195,6 +244,31 @@ public readonly cacheControl: string;
 - *Default:* 'max-age=300, private'
 
 The cache control header to use when writing badges to S3.
+
+---
+
+##### `cloudformationCaptures`<sup>Optional</sup> <a name="cloudformationCaptures" id="cdk-badges.CdkBadgesProps.property.cloudformationCaptures"></a>
+
+```typescript
+public readonly cloudformationCaptures: CaptureSettings;
+```
+
+- *Type:* <a href="#cdk-badges.CaptureSettings">CaptureSettings</a>
+
+The settings for creating cloudformation badges.
+
+---
+
+##### `codepipelineCaptures`<sup>Optional</sup> <a name="codepipelineCaptures" id="cdk-badges.CdkBadgesProps.property.codepipelineCaptures"></a>
+
+```typescript
+public readonly codepipelineCaptures: CaptureSettings;
+```
+
+- *Type:* <a href="#cdk-badges.CaptureSettings">CaptureSettings</a>
+- *Default:* captureAll: true
+
+The settings for creating codepipeline badges.
 
 ---
 
