@@ -3,7 +3,9 @@
 [![npm version](https://badge.fury.io/js/cdk-badges.svg?style=flat-square)](https://npmjs.com/package/cdk-badges)
 ![Pipeline](https://github.com/NimmLor/cdk-badges/actions/workflows/release.yml/badge.svg?style=flat-square)
 
-![](https://test-badgeshostingbuckete4222a39-u0yatb0qkvhg.s3.eu-central-1.amazonaws.com/cf/Test/status-detailed.svg) ![](https://test-badgeshostingbuckete4222a39-u0yatb0qkvhg.s3.eu-central-1.amazonaws.com/cf/Test/resource-count.svg)
+![](https://cdk-badges-test-badgeshostingbuckete4222a39-1gvwt4htdjmgc.s3.eu-central-1.amazonaws.com/cf/cdk-badges-Test/status-detailed/flat-square.svg) ![](https://cdk-badges-test-badgeshostingbuckete4222a39-1gvwt4htdjmgc.s3.eu-central-1.amazonaws.com/cf/cdk-badges-Test/resource-count/flat-square.svg)
+
+![](https://cdk-badges-test-badgeshostingbuckete4222a39-1gvwt4htdjmgc.s3.eu-central-1.amazonaws.com/codepipeline/cdk-badges-Pipeline/state-named-detailed/flat-square.svg) ![](https://cdk-badges-test-badgeshostingbuckete4222a39-1gvwt4htdjmgc.s3.eu-central-1.amazonaws.com/codepipeline/cdk-badges-Pipeline/stage/Build/stage-state-named/flat-square.svg)
 
 Generate badges for your cdk applications. Badges are created via eventbride events that invoke a lambda function that writes the badge to a s3 bucket.
 
@@ -48,6 +50,8 @@ new CdkBadges(stack, 'Badges', {
 
 - Cloudformation stack status
 - Cloudformation resource count
+- Codepipeline status
+- Codepipeline
 
 ### Web UI
 
