@@ -30,6 +30,11 @@ export type StackInfo = Partial<{
   updatedAt: Stack['LastUpdatedTime']
 }>
 
+export enum ServiceName {
+  CF = 'CloudFormation',
+  CODE_PIPELINE = 'CodePipeline',
+}
+
 const cf = new CloudFormationClient({})
 const s3 = new S3Client({})
 

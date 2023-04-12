@@ -33,9 +33,14 @@
 
   $: badges =
     response?.badges.map((badge) => {
-      const isVisible = Object.entries(styleFilter).some(
+      let isVisible = Object.entries(styleFilter).some(
         ([style, isActive]) => isActive && badge.tags['style'] === style
       )
+      if (isVisible) {
+        isVisible = Object.entries(serviceFilter).some(
+          ([style, isActive]) => isActive && badge.tags['serviceName'] === style
+        )
+      }
       return { badge, isVisible }
     }) ?? []
 
@@ -86,17 +91,17 @@
         >
           <div class="col-span-4">
             <Filter
-              label="Filter by service:"
+              label="Services"
               filterTagProperty="serviceName"
               bind:chipFilter={serviceFilter}
               allBadges={response?.badges ?? []}
               isLoading={!response}
             />
           </div>
-          <div class="col-span-2 mt-2">
+          <div class="col-span-2 mt-3">
             <Filter
               filterTagProperty="style"
-              label="Filter by style:"
+              label="Styles"
               bind:chipFilter={styleFilter}
               allBadges={response?.badges ?? []}
               isLoading={!response}
@@ -132,8 +137,8 @@
             <BadgeCategory label={service[0]} badges={service[1]} />
           {/each}
         {:else if displayStyle === 'byLabel'}
-          {#each Object.entries(badgesByLabel) as style}
-            <BadgeCategory label={style[0]} badges={style[1]} />
+          {#each Object.entries(badgesByLabel) as label}
+            <BadgeCategory label={label[0]} badges={label[1]} />
           {/each}
         {/if}
       </div>

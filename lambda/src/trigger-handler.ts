@@ -1,6 +1,11 @@
 import { getCfResourceCountBadge } from './cf-badges'
 import { getBadgeKeys } from './filenames'
-import { getCfStackResources, LambdaEnvironment, writeBadgeToS3 } from './utils'
+import {
+  getCfStackResources,
+  LambdaEnvironment,
+  ServiceName,
+  writeBadgeToS3,
+} from './utils'
 import type { Format } from 'badge-maker'
 
 const { STACK_NAME, BADGE_STYLES } = LambdaEnvironment
@@ -38,7 +43,13 @@ export const updateStackResourceCountBadge = async () => {
   await Promise.all(
     badges.map(
       async ({ filekey, svg, label, style }) =>
-        await writeBadgeToS3({ filekey, label, style, svg })
+        await writeBadgeToS3({
+          filekey,
+          label,
+          serviceName: ServiceName.CF,
+          style,
+          svg,
+        })
     )
   )
 }
