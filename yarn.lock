@@ -62,10 +62,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@atws/tsconfig@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@atws/tsconfig@npm:1.4.3"
-  checksum: d72089637047fcf74fec79fc54a6d635167b0c1134ec6db0f0af3cf99059159535503cad9e0c53dc01e3abc7f271593175297b7eb7c66d4300411adda9f8d70e
+"@atws/tsconfig@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@atws/tsconfig@npm:2.0.1"
+  checksum: 8cd7de85f49aaa876023ef69dd5b2daa968883a64a04a587f9012f5d076184b6728d290184f04d67915452b5869cebc453a6d0f3a90d6d76a75392569e4cde0a
   languageName: node
   linkType: hard
 
@@ -4052,7 +4052,7 @@ __metadata:
     "@atws/eslint-config": ^1.7.12
     "@atws/prettier-config": ^1.2.0
     "@atws/projen-config": ^1.9.5
-    "@atws/tsconfig": ^1.4.3
+    "@atws/tsconfig": 2.0.1
     "@aws-sdk/client-cloudformation": 3.188.0
     "@aws-sdk/client-s3": 3.188.0
     "@types/aws-lambda": ^8.10.113
