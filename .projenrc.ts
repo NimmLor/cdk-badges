@@ -48,6 +48,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
   workflowNodeVersion: '16.x',
 })
 
+const buildLambdaCommand =
+  'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external":@aws-sdk/*" --minify --target=ES2022 --format=cjs'
+
 project.setScript('cdk', 'cdk')
 project.setScript(
   'e2e',
@@ -61,7 +64,7 @@ project.setScript(
 
 project.setScript(
   'deploy:lambda',
-  'yarn cdk deploy --app "ts-node ./src/integ.default.ts" --require-approval never --hotswap --outputs-file ./cdk.out/integ-outputs.json'
+  `${buildLambdaCommand} && yarn cdk deploy --app "ts-node ./src/integ.default.ts" --require-approval never --hotswap --outputs-file ./cdk.out/integ-outputs.json`
 )
 
 project.setScript(
@@ -79,9 +82,7 @@ buildTask.exec(
   'cd frontend && yarn install && yarn build --emptyOutDir && cd ..'
 )
 
-buildTask.exec(
-  'esbuild lambda/src/index.ts --bundle --outdir=lib/lambda --platform=node --external:@aws-sdk/* --minify --target=ES2022 --format=cjs'
-)
+buildTask.exec(buildLambdaCommand)
 
 // locate the output url and write it to .env.local
 buildTask.exec(
