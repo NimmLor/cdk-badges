@@ -171,7 +171,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .stageStateDetailed,
-          label: `${stage} - Stage Fullname Detailed Status`,
+          label: `${pipeline}: ${stage} - Stage Fullname Detailed Status`,
           serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
@@ -182,7 +182,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         },
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline.stageState,
-          label: `${stage} - Stage Fullname Status`,
+          label: `${pipeline}: ${stage} - Stage Fullname Status`,
           serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
@@ -193,7 +193,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .stageStateNamedDetailed,
-          label: `${stage} - Stage Detailed Status`,
+          label: `${pipeline}: ${stage} - Stage Detailed Status`,
           serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
@@ -204,7 +204,7 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         },
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline.stageStateNamed,
-          label: `${stage} - Stage Status`,
+          label: `${pipeline}: ${stage} - Stage Status`,
           serviceName: ServiceName.CP,
           style,
           svg: getCodePipelineStatusBadge(
@@ -220,8 +220,8 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
 
   promises.push(
     ...badges.map(
-      async ({ filekey, svg, label, style }) =>
-        await writeBadgeToS3({ filekey, label, style, svg })
+      async ({ filekey, svg, label, style, serviceName }) =>
+        await writeBadgeToS3({ filekey, label, serviceName, style, svg })
     )
   )
 

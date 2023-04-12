@@ -105,9 +105,11 @@ export const writeBadgeToS3 = async ({
   svg,
   label,
   style,
+  serviceName,
 }: {
   filekey: string
   label: string
+  serviceName: string
   style: Format['style'] & string
   svg: string
 }) => {
@@ -123,6 +125,7 @@ export const writeBadgeToS3 = async ({
       Tagging: new URLSearchParams({
         generatedAt: new Date().toISOString(),
         label,
+        serviceName,
         source: 'cdk-badges',
         style,
       }).toString(),
