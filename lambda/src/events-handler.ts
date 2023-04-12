@@ -157,15 +157,22 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline
             .stageStateDetailed,
-          label: `${stage} - Stage Generic Detailed Status`,
+          label: `${stage} - Stage Fullname Detailed Status`,
           style,
-          svg: getCodePipelineStatusBadge({ stage, state }, { style }, true),
+          svg: getCodePipelineStatusBadge(
+            { stage, state },
+            { label: [pipeline, stage].join(' - '), style },
+            true
+          ),
         },
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline.stageState,
-          label: `${stage} - Stage Generic Status`,
+          label: `${stage} - Stage Fullname Status`,
           style,
-          svg: getCodePipelineStatusBadge({ stage, state }, { style }),
+          svg: getCodePipelineStatusBadge(
+            { stage, state },
+            { label: [pipeline, stage].join(' - '), style }
+          ),
         },
         {
           filekey: getBadgeKeys(pipeline, style).codepipeline
