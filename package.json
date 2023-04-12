@@ -44,7 +44,7 @@
     "@atws/eslint-config": "^1.7.12",
     "@atws/prettier-config": "^1.2.0",
     "@atws/projen-config": "^1.9.5",
-    "@atws/tsconfig": "^1.4.3",
+    "@atws/tsconfig": "2.0.1",
     "@aws-sdk/client-cloudformation": "3.188.0",
     "@aws-sdk/client-s3": "3.188.0",
     "@types/aws-lambda": "^8.10.113",

@@ -188,7 +188,6 @@ export class CdkBadges extends Construct {
     const eventRule = new aws_events.Rule(this, 'Rule', {
       eventPattern: {
         source: ['aws.cloudformation', 'aws.codepipeline'],
-        // source: ['aws.codepipeline', 'aws.codebuild'],
       },
     })
 
