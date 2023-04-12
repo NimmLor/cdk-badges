@@ -255,6 +255,11 @@ export class CdkBadges extends Construct {
 
     const eventRule = new aws_events.Rule(this, 'Rule', {
       eventPattern: {
+        detailType: [
+          'CloudFormation Stack Status Change',
+          'CodePipeline Pipeline Execution State Change',
+          'CodePipeline Stage Execution State Change',
+        ],
         resources: eventBridgeCaptureResources,
         source: ['aws.cloudformation', 'aws.codepipeline'],
       },

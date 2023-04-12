@@ -87,6 +87,7 @@ Any object.
 | <code><a href="#cdk-badges.CdkBadges.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
 | <code><a href="#cdk-badges.CdkBadges.property.hostingBucket">hostingBucket</a></code> | <code>aws-cdk-lib.aws_s3.Bucket</code> | *No description.* |
 | <code><a href="#cdk-badges.CdkBadges.property.lambdaHandler">lambdaHandler</a></code> | <code>aws-cdk-lib.aws_lambda_nodejs.NodejsFunction</code> | *No description.* |
+| <code><a href="#cdk-badges.CdkBadges.property.functionUrl">functionUrl</a></code> | <code>aws-cdk-lib.aws_lambda.FunctionUrl</code> | *No description.* |
 
 ---
 
@@ -119,6 +120,16 @@ public readonly lambdaHandler: NodejsFunction;
 ```
 
 - *Type:* aws-cdk-lib.aws_lambda_nodejs.NodejsFunction
+
+---
+
+##### `functionUrl`<sup>Optional</sup> <a name="functionUrl" id="cdk-badges.CdkBadges.property.functionUrl"></a>
+
+```typescript
+public readonly functionUrl: FunctionUrl;
+```
+
+- *Type:* aws-cdk-lib.aws_lambda.FunctionUrl
 
 ---
 

@@ -67,13 +67,14 @@ export const eventsHandler: EventBridgeHandler<string, unknown, void> = async (
   console.log('Received event:', JSON.stringify(event, null, 2))
 
   if (isCfStackEvent(event)) {
+    const stackName =
+      event.detail['stack-id'].split(':stack/')[1].split('/')[0] ?? 'default'
+
     // update resource count badge
-    promises.push(updateStackResourceCountBadge())
+    promises.push(updateStackResourceCountBadge(stackName))
 
     const status = event.detail['status-details'].status
     const updatedAt = new Date(event.time)
-    const stackName =
-      event.detail['stack-id'].split(':stack/')[1].split('/')[0] ?? 'default'
 
     for (const style of LambdaEnvironment.BADGE_STYLES) {
       badges.push(

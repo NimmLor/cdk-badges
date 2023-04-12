@@ -8,10 +8,10 @@ import {
 } from './utils'
 import type { Format } from 'badge-maker'
 
-const { STACK_NAME, BADGE_STYLES } = LambdaEnvironment
+const { BADGE_STYLES } = LambdaEnvironment
 
-export const updateStackResourceCountBadge = async () => {
-  const resources = await getCfStackResources(STACK_NAME)
+export const updateStackResourceCountBadge = async (stackName) => {
+  const resources = await getCfStackResources(stackName)
 
   const badges: Array<{
     filekey: string
@@ -23,17 +23,17 @@ export const updateStackResourceCountBadge = async () => {
   for (const style of BADGE_STYLES) {
     badges.push(
       {
-        filekey: getBadgeKeys(STACK_NAME, style).cf.resourceCount,
-        label: `${STACK_NAME} Generic Stack Resource Count`,
+        filekey: getBadgeKeys(stackName, style).cf.resourceCount,
+        label: `${stackName} Generic Stack Resource Count`,
         style,
         svg: getCfResourceCountBadge(resources.length, { style }),
       },
       {
-        filekey: getBadgeKeys(STACK_NAME, style).cf.namedResourceCount,
-        label: `${STACK_NAME} Stack Resource Count`,
+        filekey: getBadgeKeys(stackName, style).cf.namedResourceCount,
+        label: `${stackName} Stack Resource Count`,
         style,
         svg: getCfResourceCountBadge(resources.length, {
-          label: `${STACK_NAME} Stack`,
+          label: `${stackName} Stack`,
           style,
         }),
       }
