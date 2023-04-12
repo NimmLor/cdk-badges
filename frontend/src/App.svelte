@@ -26,7 +26,18 @@
     response = await fetch(url).then((r) => r.json())
   })
 
+  let styleFilter: Record<string, boolean> = {}
+  let serviceFilter: Record<string, boolean> = {}
+
   let badges: Array<{ badge: Badge; isVisible: boolean }> = []
+
+  $: badges =
+    response?.badges.map((badge) => {
+      const isVisible = Object.entries(styleFilter).some(
+        ([style, isActive]) => isActive && badge.tags['style'] === style
+      )
+      return { badge, isVisible }
+    }) ?? []
 
   $: badgesByStyle = badges.reduce((acc, badge) => {
     if (!acc[badge.badge.tags['style']]) {
@@ -44,7 +55,15 @@
     return acc
   }, {} as Record<string, Array<{ badge: Badge; isVisible: boolean }>>)
 
-  let displayStyle: 'grid' | 'byStyle' | 'byLabel' = 'byLabel'
+  $: badgesByService = badges.reduce((acc, badge) => {
+    if (!acc[badge.badge.tags['serviceName']]) {
+      acc[badge.badge.tags['serviceName']] = []
+    }
+    acc[badge.badge.tags['serviceName']]?.push(badge)
+    return acc
+  }, {} as Record<string, Array<{ badge: Badge; isVisible: boolean }>>)
+
+  let displayStyle: 'grid' | 'byStyle' | 'byLabel' | 'byService' = 'byLabel'
 </script>
 
 <main class="max-w-4xl px-4 pt-6 pb-32 mx-auto">
@@ -63,11 +82,22 @@
       </h2>
       <div>
         <div
-          class="grid grid-cols-5 lg:px-8 px-4 py-4 border-b border-secondary"
+          class="lg:px-8 border-secondary grid grid-cols-4 px-4 py-4 border-b"
         >
-          <div class="col-span-3">
+          <div class="col-span-4">
             <Filter
-              bind:filteredBadges={badges}
+              label="Filter by service:"
+              filterTagProperty="serviceName"
+              bind:chipFilter={serviceFilter}
+              allBadges={response?.badges ?? []}
+              isLoading={!response}
+            />
+          </div>
+          <div class="col-span-2 mt-2">
+            <Filter
+              filterTagProperty="style"
+              label="Filter by style:"
+              bind:chipFilter={styleFilter}
               allBadges={response?.badges ?? []}
               isLoading={!response}
             />
@@ -96,6 +126,10 @@
         {:else if displayStyle === 'byStyle'}
           {#each Object.entries(badgesByStyle) as style}
             <BadgeCategory label={style[0]} badges={style[1]} />
+          {/each}
+        {:else if displayStyle === 'byService'}
+          {#each Object.entries(badgesByService) as service}
+            <BadgeCategory label={service[0]} badges={service[1]} />
           {/each}
         {:else if displayStyle === 'byLabel'}
           {#each Object.entries(badgesByLabel) as style}

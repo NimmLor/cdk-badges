@@ -4,33 +4,29 @@
   import Skeleton from './Skeleton.svelte'
 
   let availableStyles: Array<string> = []
-  let chipFilter: Record<string, boolean> = {}
+  export let chipFilter: Record<string, boolean> = {}
 
   export let allBadges: Array<Badge> = []
 
   export let isLoading = false
 
+  export let filterTagProperty: keyof Badge['tags'] = 'style'
+
+  export let label = ''
+
   $: availableStyles = allBadges
-    ? [...new Set(allBadges.map((b) => b.tags['style']))]
+    ? [...new Set(allBadges.map((b) => b.tags[filterTagProperty]))]
     : []
 
   $: chipFilter = availableStyles.reduce((acc, style) => {
     acc[style] = true
     return acc
   }, {} as Record<string, boolean>)
-
-  export let filteredBadges: Array<{ badge: Badge; isVisible: boolean }> = []
-  $: filteredBadges = allBadges.map((badge) => {
-    const isVisible = Object.entries(chipFilter).some(
-      ([style, isActive]) => isActive && badge.tags['style'] === style
-    )
-    return { badge, isVisible }
-  })
 </script>
 
 <div>
-  <div class="text-base font-medium">Filter by style:</div>
-  <div class="flex-wrap flex">
+  <div class="text-base font-medium">{label}</div>
+  <div class="flex flex-wrap">
     {#each Object.entries(chipFilter) as styleFilter}
       <div class="mt-2 mr-3">
         <ChipToggle
