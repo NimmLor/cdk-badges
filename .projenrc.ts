@@ -102,9 +102,6 @@ new EslintConfig(project, {
   .eslintConfig.addOverride('overrides.1', {
     extends: ['@atws/eslint-config'],
     files: ['frontend/**/*.{ts,svelte}'],
-    parserOptions: {
-      project: 'frontend/tsconfig.json',
-    },
   })
 
 new VscodeConfig(project, {

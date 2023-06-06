@@ -21,10 +21,7 @@
       ],
       "files": [
         "frontend/**/*.{ts,svelte}"
-      ],
-      "parserOptions": {
-        "project": "frontend/tsconfig.json"
-      }
+      ]
     }
   ],
   "root": true
