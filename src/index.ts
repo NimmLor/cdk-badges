@@ -15,13 +15,11 @@ import * as path from 'path'
 export interface LocalizationSettings {
   /**
    * Whether to use 12 hour time format.
-   *
    * @default false
    */
   readonly hour12?: boolean
   /**
    * The locale to use when generating badges.
-   *
    * @example 'de-DE'
    * @example 'de-AT'
    * @default 'en-GB'
@@ -29,14 +27,11 @@ export interface LocalizationSettings {
   readonly locale?: string
   /**
    * Wheter to show seconds in the time.
-   *
    * @default false
    */
   readonly showSeconds?: boolean
   /**
    * The timezone to use when generating badges.
-   *
-   *
    * @example 'Europe/Vienna'
    * @default 'UTC'
    */
@@ -46,7 +41,6 @@ export interface LocalizationSettings {
    * The format of the timezone to display.
    *
    * Sets the timeZoneName option of the Intl.DateTimeFormat constructor.
-   *
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#parameters
    * @default 'none'
    */
@@ -62,7 +56,6 @@ export interface LocalizationSettings {
 
 /**
  * The style of the badge to generate.
- *
  * @default 'flat-square'
  */
 export type BadgeStyle =
@@ -75,13 +68,11 @@ export type BadgeStyle =
 export interface CaptureSettings {
   /**
    * Whether to capture all pipelines in the account.
-   *
    * @default true
    */
   readonly captureAll?: boolean
   /**
    * Enable the codepipeline capture.
-   *
    * @default true
    */
   readonly enabled?: boolean
@@ -96,20 +87,17 @@ export interface CaptureSettings {
 export interface CdkBadgesProps {
   /**
    * Whether to add a preview webapp to the stack.
-   *
    * @default true
    */
   readonly addPreviewWebapp?: boolean
   /**
    * The style of the badge to generate.
-   *
    * @default ['flat-square', 'flat', 'for-the-badge', 'plastic']
    */
   readonly badgeStyles?: BadgeStyle[]
 
   /**
    * The cache control header to use when writing badges to S3.
-   *
    * @default 'max-age=300, private'
    */
   readonly cacheControl?: string
@@ -121,7 +109,6 @@ export interface CdkBadgesProps {
 
   /**
    * The settings for creating codepipeline badges.
-   *
    * @default captureAll: true
    */
   readonly codepipelineCaptures?: CaptureSettings
@@ -152,6 +139,12 @@ export class CdkBadges extends Construct {
     } = props
 
     this.hostingBucket = new aws_s3.Bucket(this, 'hostingBucket', {
+      blockPublicAccess: new aws_s3.BlockPublicAccess({
+        blockPublicAcls: false,
+        blockPublicPolicy: false,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: false,
+      }),
       publicReadAccess: true,
     })
 
